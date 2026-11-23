@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.3 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 4.4 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -197,6 +197,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
 .vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
+.adwg{margin:0 0 10px}.adwg .dwg{margin-top:0}.adwg .dwg+.dwg{margin-top:6px}
 .cronl{padding-bottom:6px}
 .cronl .srow{margin-bottom:6px;background:var(--bg)}
 .backall{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:2px 0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
@@ -279,7 +280,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.3 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 4.4 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -664,17 +665,17 @@ const cardHtml=(a,open)=>{const cl=[...a.cl];const cls=open?cl.join(', '):cl.sli
     <div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
     <div class="nums"><span><b>${num(a.n)}</b> ${a.n===1?'vendita':'vendite'}</span><span><b>${num(a.q)}</b> pz</span><span><b>${eur(a.t)}</b></span></div></div>
     ${open?`<div class="det"><div><span>Prima vendita</span><span>${fd(a.first)}</span></div><div><span>Ultima vendita</span><span>${fd(a.last)}</span></div>
-    <div><span>Ultimo prezzo</span><span>${a.lp!==null?`<b>${eur2(a.lp)}</b> (${fd(a.lpd)})`:'–'}</span></div>${dwgBtns(a.k)}</div>`:''}</div>`};
+    <div><span>Ultimo prezzo</span><span>${a.lp!==null?`<b>${eur2(a.lp)}</b> (${fd(a.lpd)})`:'–'}</span></div></div>`:''}</div>`};
 function renderArc(){
   const yb=$('rYrs');if(yb.parentNode!==$('v-archivio')||yb.nextElementSibling!==$('rOut'))$('rOut').before(yb);
-  yb.style.marginTop=rSel?'':'12px';
+  yb.style.marginTop='';yb.hidden=!rSel;
   if(rSel){
     const R=V.filter(r=>r.k.toLowerCase()===rSel);
     chart(R);
     if(!R.length){$('rOut').innerHTML=`<div class="selbar"><b>Articolo non trovato</b><button type="button" id="rBack">‹ Tutti</button></div>`;return}
     const a=aggr(R)[0];
     $('rOut').innerHTML=`<button class="backall" type="button" id="rBack">‹ Tutti gli articoli</button>`+cardHtml(a,true)+
-      '<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Cronologia vendite · ${righeV(R.length)}</summary><div class="cronl">`+
+      `<div class="adwg">${dwgBtns(a.k)}</div>`+'<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Vendite</summary><div class="cronl">`+
       R.map(r=>`<div class="vrow srow">${dayBox(r.d,false)}<div>
         <div class="nums" style="margin-top:0"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div>
         ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div></div>`).join('')+'</div></details>';
@@ -685,9 +686,7 @@ function renderArc(){
   let A=aggr(S0);
   if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
   if(rc)A.sort((a,b)=>a.k.localeCompare(b.k,'it',{numeric:true}));
-  const keys=new Set(A.map(a=>a.k.toLowerCase()));
-  chart(w.length?S0.filter(r=>keys.has(r.k.toLowerCase())):S0);
-  if(!w.length&&!rc&&!ra){$('rOut').innerHTML='<div class="empty">Cerca un codice o una descrizione, oppure scegli un cliente o un anno.</div>';return}
+  if(!w.length&&!rc&&!ra){$('rOut').innerHTML='';return}
   if(!A.length){$('rOut').innerHTML='<div class="empty">Nessun articolo con questi criteri.</div>';return}
   let h=A.slice(0,rlim).map(a=>cardHtml(a,false)).join('');
   if(A.length>rlim)h+=`<button class="more" id="rMore">Mostra altri ${num(Math.min(100,A.length-rlim))} articoli (di ${num(A.length)})</button>`;
