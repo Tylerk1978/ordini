@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.8 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 4.9 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -114,18 +114,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(44px,11.6vw,68px);line-height:1;letter-spacing:-.01em}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
-.menu{display:grid;gap:10px;margin-top:clamp(12px,5vh,44px)}
-.mbtn{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;min-height:85px;padding:12px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.menu{display:grid;gap:9px;margin-top:clamp(8px,3.5vh,32px)}
+.mbtn{display:grid;grid-template-columns:50px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:70px;padding:9px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
-.mico{width:56px;height:56px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
-.mico svg{width:32px;height:32px}
+.mico{width:50px;height:50px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.mico svg{width:28px;height:28px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{margin-top:18px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:85px}
+.mupd{margin-top:14px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:70px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
-.mt{display:block;font:700 22px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
+.mt{display:block;font:700 21px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
 .ms{display:block;font-size:14px;color:var(--mute);margin-top:2px}
 .arr{font-size:30px;color:var(--mute)}
 .src{font-size:13px;color:var(--mute)}
@@ -197,6 +197,19 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
 .vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
+.kbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.kt{font-weight:600;font-size:15px;margin:2px 0 8px}
+.kyr{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:4px 0;font-size:14px;font-variant-numeric:tabular-nums}
+.kyr i{display:block;height:12px;border-radius:6px;background:var(--panel);overflow:hidden}.kyr i u{display:block;height:100%;background:var(--green)}
+.kyr b{white-space:nowrap;text-align:right;min-width:118px}
+.kth,.krow{display:grid;grid-template-columns:48px minmax(0,1fr) auto minmax(78px,auto);gap:0 8px;align-items:center;font-variant-numeric:tabular-nums}
+.kth{font-size:12px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
+.kth span:nth-child(n+3),.krow>span:nth-child(n+3){text-align:right}
+.krow{padding:6px 4px;border-radius:6px;font-size:14px}.krow.z{background:var(--bg)}
+.krow .day{padding:2px 0}.krow .day b{font-size:16px}.krow .day span{font-size:11px}
+.ka{min-width:0}.ka b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ka small{display:block;font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.krow .tt{justify-self:end;font-weight:700;color:var(--green);background:light-dark(#e3efe8,#1f3a2b);border-radius:6px;padding:3px 6px;white-space:nowrap}
+.krow>span:nth-child(3){white-space:nowrap}
 .adwg{margin:0 0 10px}.adwg .dwg{margin-top:0}.adwg .dwg+.dwg{margin-top:6px}
 .cronl{padding-bottom:6px}
 .sth,.srow2{display:grid;grid-template-columns:52px minmax(0,.8fr) minmax(0,1fr) minmax(0,1.25fr);gap:0 8px;align-items:center}
@@ -269,6 +282,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg></span>
         <span><span class="mt">Archivio Lavori</span></span><span class="arr">›</span>
       </button>
+      <button class="mbtn" data-go="clienti" type="button">
+        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg></span>
+        <span><span class="mt">Clienti</span></span><span class="arr">›</span>
+      </button>
       <button class="mbtn" data-go="impostazioni" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
         <span><span class="mt">Impostazioni</span></span><span class="arr">›</span>
@@ -289,7 +306,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.8 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 4.9 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -335,6 +352,12 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
   </div>
   <details class="yrs" id="rYrs"><summary>Storico per anno</summary><div id="rYrOut"></div></details>
   <div id="rOut"></div>
+</section>
+
+<section id="v-clienti" class="view" hidden>
+  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Clienti</h2></div>
+  <div id="kSearch" class="bar"><input id="kq" class="search" type="search" placeholder="Cerca cliente" autocomplete="off" aria-label="Cerca cliente"></div>
+  <div id="kOut"></div>
 </section>
 
 <section id="v-impostazioni" class="view" hidden>
@@ -396,7 +419,7 @@ async function pdfOp(mode,fn){const db=await idb();return await new Promise((res
 async function dbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)});return true}catch(e){return false}}
 
 /* ---------- navigazione ---------- */
-const VIEWS=['home','ordini','consegne','impostazioni','archivio'];
+const VIEWS=['home','ordini','consegne','impostazioni','archivio','clienti'];
 let DATA=null,keepScroll=null,keepFrom=null;
 function route(){
   let v=location.hash.slice(1);if(!VIEWS.includes(v)||(!DATA&&v!=='impostazioni'))v='home';
@@ -404,9 +427,9 @@ function route(){
   for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':'‹ Home';
   if(v==='ordini'&&keepScroll!==null&&keepFrom===v){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
-  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc()}
+  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli()}
 window.addEventListener('hashchange',route);
-document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&b.dataset.go==='archivio')rSel=null;if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
+document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&b.dataset.go==='archivio')rSel=null;if(b&&b.dataset.go==='clienti'){kSel=null;klim=100}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
 for(const b of document.querySelectorAll('.back'))b.addEventListener('click',()=>{const t=backTo;backTo=null;location.hash=t||'home'});
 
@@ -712,6 +735,32 @@ $('rOut').addEventListener('click',e=>{if(e.target.id==='rMore'){rlim+=100;rende
   if(e.target.closest('.det')||e.target.closest('.srow')||e.target.closest('.sel1'))return;
   const r=e.target.closest('.vrow');if(r&&r.dataset.k){rScroll=window.scrollY;rSel=r.dataset.k.toLowerCase();renderArc();window.scrollTo({top:0})}});
 $('rOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.k&&!rSel){e.preventDefault();e.target.click()}});
+
+/* ================= CLIENTI ================= */
+let kq='',kSel=null,klim=100,kScroll=0;
+function renderCli(){
+  $('kSearch').hidden=!!kSel;
+  if(kSel){
+    const R=V.filter(r=>r.c===kSel);
+    const Y=new Map();for(const r of R)if(r.y){const o=Y.get(r.y)||{q:0,t:0,n:0};o.q+=r.q;o.t+=r.t;o.n++;Y.set(r.y,o)}
+    const ys=[...Y].sort((a,b)=>b[0]-a[0]);const mx=Math.max(1,...ys.map(([,o])=>o.t));const TT=R.reduce((s,r)=>s+r.t,0);
+    let h=`<button class="backall" type="button" id="kBack">‹ Tutti i clienti</button>
+      <div class="vrow arow sel1"><div><div class="cod" style="font-size:18px">${esc(kSel)}</div>
+      <div class="nums"><span><b>${num(R.length)}</b> ${R.length===1?'vendita':'vendite'}</span><span>Totale <b>${eur(TT)}</b></span></div></div></div>
+      <div class="kbox"><div class="kt">Fatturato anno per anno</div>${ys.map(([y,o])=>`<div class="kyr"><span>${y}</span><i><u style="width:${Math.max(1,o.t/mx*100).toFixed(1)}%"></u></i><b>${eur(o.t)}</b></div>`).join('')}</div>
+      <div class="kbox"><div class="kt">Vendite</div><div class="kth"><span>Data</span><span>Articolo</span><span>Pezzi</span><span>Totale €</span></div>`;
+    h+=R.slice(0,klim).map((r,i)=>`<div class="krow${i%2?' z':''}">${dayBox(r.d,false)}<span class="ka"><b>${esc(r.k)}</b><small>${esc(r.x)}</small></span><span>${num(r.q)}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('');
+    if(R.length>klim)h+=`<button class="more" id="kMore">Mostra altre ${num(Math.min(100,R.length-klim))} vendite (di ${num(R.length)})</button>`;
+    $('kOut').innerHTML=h+'</div>';return}
+  const m=new Map();for(const r of V){const o=m.get(r.c)||{n:0,t:0,last:''};o.n++;o.t+=r.t;if(r.d>o.last)o.last=r.d;m.set(r.c,o)}
+  const w=kq?kq.split(/\s+/):[];
+  const L=[...m].filter(([c])=>w.every(p=>c.toLowerCase().includes(p))).sort((a,b)=>a[0].localeCompare(b[0],'it'));
+  $('kOut').innerHTML=L.length?L.map(([c,o])=>`<button class="cpi kc" type="button" data-c="${esc(c)}">${esc(c)}<span>${righeV(o.n)}</span></button>`).join(''):'<div class="empty">Nessun cliente trovato.</div>'}
+let kt;$('kq').addEventListener('input',e=>{clearTimeout(kt);kt=setTimeout(()=>{kq=e.target.value.trim().toLowerCase();renderCli()},120)});
+$('kOut').addEventListener('click',e=>{
+  if(e.target.id==='kMore'){klim+=100;renderCli();return}
+  if(e.target.id==='kBack'){kSel=null;renderCli();requestAnimationFrame(()=>window.scrollTo(0,kScroll));return}
+  const b=e.target.closest('.kc');if(b){kScroll=window.scrollY;kSel=b.dataset.c;klim=100;renderCli();window.scrollTo({top:0})}});
 
 /* ================= DATI VENDITE ================= */
 let V=[];
