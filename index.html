@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Ordini aperti FM · versione 2.1 · 23/11/2026 -->
+<!-- Ordini aperti FM · versione 2.3 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -84,6 +84,10 @@ header p{margin:4px 0 0;color:var(--mute);font-size:14px}
 .tag.cf{background:var(--ambbg);color:var(--amb)}.tag.cl{background:var(--panel)}.tag.lt{background:var(--redbg);color:var(--red)}
 .det{grid-column:1/-1;display:none;font-size:14px;background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:4px}
 .row.open .det{display:block}
+.dtot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px!important;font-weight:700}.dtot span:first-child{color:var(--ink)!important}
+.cfx{color:var(--amb);font-weight:600}
+.row .ord{margin-top:4px}
+.row::after{content:"";}
 .det div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
 .det div span:first-child{color:var(--mute);flex:none}.det div span:last-child{text-align:right;overflow-wrap:anywhere}
 .empty{text-align:center;color:var(--mute);padding:40px 10px}
@@ -200,7 +204,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 2.1 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 2.3 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -333,16 +337,18 @@ const dayBox=(ref,late)=>{
   return `<div class="day${late?' late':''}"><b>${+d}</b><span>${MESI[+m-1]} ${y.slice(2)}</span></div>`};
 const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${dayBox(r.ref,r.late)}<div>
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
-  ${showCli?`<div class="who">${esc(r.c)}</div>`:''}
-  <div class="nums"><span><b>${num(r.n)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.tot)}</b></span></div>
+  <div class="who">${esc(r.c)}</div>
   <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}</div>
-  <div class="tags"><span class="tag ty">${r.t==='CL'?'Conto lavoro':'Conferma ordine'}</span>${r.late?'<span class="tag lt">In ritardo</span>':''}${r.conf?'<span class="tag cf">Da confermare</span>':''}</div>
   </div><div class="det">
-  <div><span>Cliente</span><span>${esc(r.c)}</span></div>
+  <div><span>Tipo</span><span>${r.t==='CL'?'<b>Conto lavoro</b>':'Conferma ordine'}</span></div>
   <div><span>COC</span><span>${esc(r.coc)} / ${esc(r.a)}</span></div>
   <div><span>Consegna promessa</span><span>${fd(r.dp)}</span></div>
   <div><span>Finestra consegna</span><span>${r.da||r.dx?fd(r.da)+' → '+fd(r.dx):'–'}</span></div>
   <div><span>Spedizione concordata</span><span>${fd(r.ds)}${r.ck?' ('+esc(r.ck)+')':''}</span></div>
+  <div><span>Quantità</span><span>${num(r.n)} pz</span></div>
+  <div><span>Prezzo</span><span>${eur2(r.p)} cad.</span></div>
+  <div class="dtot"><span>Totale</span><span>${eur2(r.tot)}</span></div>
+  ${r.conf?'<div><span>Stato</span><span class="cfx">Da confermare</span></div>':''}
   ${r.cig?`<div><span>CIG</span><span>${esc(r.cig)}</span></div>`:''}
   ${r.no?`<div><span>Note</span><span>${esc(r.no)}</span></div>`:''}
   </div></div>`;
@@ -359,7 +365,7 @@ function renderOrd(){
     const auto=G.length===1||(query&&G.length<=3);
     $('out').innerHTML=G.map(x=>{const op=auto||openCli.has(x.c);
       return `<div class="cl"><button class="cl-head" data-c="${esc(x.c)}" aria-expanded="${op}">
-      <span class="cl-name">${esc(x.c)}</span><span class="cl-sum">${eur(x.tot)}</span>
+      <span class="cl-name">${esc(x.c)}</span><span class="arr">${op?'⌃':'⌄'}</span>
       <span class="cl-meta">${x.rs.length} righe${x.late?` · <span class="late">${x.late} in ritardo</span>`:''} · prossima: ${fd(x.rs.find(r=>r.ref&&r.ref>=today)?.ref)}</span></button>
       ${op?`<div class="rows">${x.rs.map(r=>rowHtml(r,false)).join('')}</div>`:''}</div>`}).join('');
   }else{
