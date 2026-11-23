@@ -1,23 +1,37 @@
-// Ordini aperti: funziona anche offline. Il codice dell'app sta in cache,
-// i dati degli ordini restano solo sul telefono (non passano da qui).
-const CACHE = 'ordini-FM-1.4';
+// Ordini aperti FM · versione 1.5
+// Il codice dell'app sta in cache per l'uso offline; i dati degli ordini restano solo sul telefono.
+// Le pagine si scaricano sempre prima dalla rete (così gli aggiornamenti arrivano subito)
+// e solo se manca la connessione si usa la copia in cache.
+const CACHE = 'ordini-FM-1.5';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE)
+    .then(c => c.addAll(FILES.map(u => new Request(u, {cache: 'reload'}))))
+    .then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  const url = new URL(e.request.url);
-  const ok = url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
-  if (!ok) return;
-  // risponde subito dalla cache e intanto aggiorna in background
-  e.respondWith(caches.open(CACHE).then(async c => {
-    const hit = await c.match(e.request, {ignoreSearch: true});
-    const net = fetch(e.request).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(e.request, r.clone()); return r; }).catch(() => hit);
-    return hit || net;
-  }));
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  const same = url.origin === location.origin;
+  const fonts = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
+  if (!same && !fonts) return;
+  const isPage = req.mode === 'navigate' || (same && /(\/|\.html|\.webmanifest)$/.test(url.pathname));
+  if (isPage) {
+    // prima la rete, senza cache del browser; offline -> copia salvata
+    e.respondWith(fetch(req, {cache: 'no-store'}).then(r => {
+      if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+      return r;
+    }).catch(async () => (await caches.match(req, {ignoreSearch: true})) || (await caches.match('index.html')) || Response.error()));
+    return;
+  }
+  // icone e font: prima la cache
+  e.respondWith(caches.match(req, {ignoreSearch: true}).then(hit => hit || fetch(req).then(r => {
+    if (r && (r.ok || r.type === 'opaque')) { const cp = r.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+    return r;
+  })));
 });

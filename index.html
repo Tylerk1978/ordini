@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Ordini aperti FM · versione 1.4 · 23/11/2026 -->
+<!-- Ordini aperti FM · versione 1.5 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -154,7 +154,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 <section id="v-home" class="view">
   <div class="home">
     <h1>Ordini aperti <span>FM</span></h1>
-    <div class="ver" id="ver">Versione 1.4 · 23/11/2026</div>
+    <div class="ver" id="ver">Versione 1.5 · 23/11/2026</div>
     <div class="menu">
       <button class="mbtn" data-go="ordini" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 11h6M9 15h6"/></svg></span>
@@ -521,7 +521,11 @@ for(const inp of document.querySelectorAll('.fileIn'))inp.addEventListener('chan
   if(saved&&saved.ordini)load(saved);
   else{$('start').hidden=false;for(const b of document.querySelectorAll('.mbtn'))b.disabled=true;$('sOrd').textContent=$('sCons').textContent=$('sVen').textContent='Carica prima il file Excel';route()}
 })();
-if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol==='https:'){
+  const hadCtrl=!!navigator.serviceWorker.controller;let reloaded=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadCtrl&&!reloaded){reloaded=true;location.reload()}});
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')r.update()})}).catch(()=>{});
+}
 }
 </script>
 </body>
