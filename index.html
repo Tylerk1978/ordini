@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Ordini aperti FM · versione 1.4 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -90,6 +91,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 /* home */
 .home{min-height:calc(100vh - 120px);display:flex;flex-direction:column;justify-content:center;gap:28px;padding-block:24px}
+.ver{display:inline-flex;align-self:flex-start;align-items:center;height:28px;padding:0 10px;border-radius:14px;background:var(--panel);font-size:13px;font-weight:600;color:var(--mute);margin-top:-14px}
 .home h1{margin:0;font-size:clamp(40px,11vw,64px);line-height:1}
 .home h1 span{display:block;color:var(--red)}
 .menu{display:grid;gap:12px}
@@ -99,6 +101,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .mico{width:52px;height:52px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .mico svg{width:28px;height:28px}
 .mbtn:first-child .mico{background:var(--red);color:#fff}
+.mupd{background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:72px}
+.mupd input{display:none}
+.mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
+.mupd .mico{background:var(--panel);color:var(--ink)}
 .mt{display:block;font:700 19px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
 .ms{display:block;font-size:14px;color:var(--mute);margin-top:2px}
 .arr{font-size:26px;color:var(--mute)}
@@ -148,6 +154,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 <section id="v-home" class="view">
   <div class="home">
     <h1>Ordini aperti <span>FM</span></h1>
+    <div class="ver" id="ver">Versione 1.4 · 23/11/2026</div>
     <div class="menu">
       <button class="mbtn" data-go="ordini" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 11h6M9 15h6"/></svg></span>
@@ -161,19 +168,21 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
         <span><span class="mt">Storico vendite</span><span class="ms" id="sVen">–</span></span><span class="arr">›</span>
       </button>
+      <label class="mbtn mupd" id="homefoot" hidden>
+        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></span>
+        <span><span class="mt">Aggiorna</span><span class="ms" id="src">–</span></span><span class="arr">›</span>
+        <input type="file" class="fileIn" accept=".xlsm,.xlsx">
+      </label>
     </div>
 
     <div class="start" id="start" hidden>
       <h2>Carica il file Commerciale</h2>
       <p>L'app legge i fogli <b>Ordini</b>, <b>Consegne</b> e <b>Vendite</b> del file Excel e tiene i dati solo su questo telefono, anche offline.</p>
-      <ol><li>Tocca il pulsante qui sotto.</li><li>Scegli <b>Commerciale_FM_articoli.xlsm</b> (se è su OneDrive, scaricalo prima sul telefono dall'app File).</li><li>Per aggiornare in futuro usa <b>Aggiorna dati</b>.</li></ol>
+      <ol><li>Tocca il pulsante qui sotto.</li><li>Scegli <b>Commerciale_FM_articoli.xlsm</b> (se è su OneDrive, scaricalo prima sul telefono dall'app File).</li><li>Per aggiornare in futuro usa <b>Aggiorna</b> in prima pagina.</li></ol>
       <label class="upd">Scegli il file Excel<input type="file" class="fileIn" accept=".xlsm,.xlsx"></label>
     </div>
 
-    <div class="homefoot" id="homefoot" hidden>
-      <span class="src" id="src"></span>
-      <label class="upd">Aggiorna dati<input type="file" class="fileIn" accept=".xlsm,.xlsx"></label>
-    </div>
+
     <div class="msg" id="msg" role="status"></div>
   </div>
 </section>
@@ -258,7 +267,7 @@ function route(){
   window.scrollTo(0,0);
   if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen()}
 window.addEventListener('hashchange',route);
-document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');if(b&&!b.disabled)location.hash=b.dataset.go});
+document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 for(const b of document.querySelectorAll('.back'))b.addEventListener('click',()=>{location.hash='home'});
 
 /* ================= ORDINI ================= */
@@ -388,7 +397,7 @@ function load(data){
   $('sOrd').textContent=`${num(D.length)} righe · ${eur(D.reduce((a,r)=>a+r.tot,0))}`;
   $('sCons').textContent=C.length?C.map(b=>b.c).join(' · '):'Nessun calendario nel file';
   $('sVen').textContent=V.length?`${num(V.length)} vendite dal ${Math.min(...V.map(r=>r.y).filter(Boolean))}`:'Nessuna vendita nel file';
-  $('src').textContent=`${data.info.nome} · file del ${data.info.file}`;
+  $('src').textContent=`Ricarica il file Excel · dati del ${data.info.file}`;
   $('start').hidden=true;$('homefoot').hidden=false;
   for(const b of document.querySelectorAll('.mbtn'))b.disabled=false;
   route()}
