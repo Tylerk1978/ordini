@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 3.0 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 3.1 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -114,14 +114,14 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(38px,10vw,56px);line-height:1}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
-.menu{display:grid;gap:10px}
+.menu{display:grid;gap:10px;margin-top:clamp(12px,5vh,44px)}
 .mbtn{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;min-height:85px;padding:12px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
 .mico{width:56px;height:56px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .mico svg{width:32px;height:32px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:85px}
+.mupd{margin-top:18px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:85px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
@@ -179,6 +179,19 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .fsb:focus-visible,.fsr:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .fsv{text-align:center}.fsv b{display:block;font:700 26px "Inter Tight",Inter,sans-serif}.fsv span{font-size:14px;color:var(--mute)}
 .fsr{margin-top:14px;width:100%;min-height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
+.cpick{position:fixed;inset:0;z-index:25;background:var(--bg);display:flex;flex-direction:column}
+.cpbar{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
+.cptitle{flex:1;font:700 22px/1.2 "Inter Tight",Inter,sans-serif}
+.cpx{min-width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 18px Inter,sans-serif;cursor:pointer}
+.cplist{flex:1;overflow:auto;padding:8px 14px calc(14px + env(safe-area-inset-bottom))}
+.cpi{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:52px;padding:8px 14px;margin-bottom:6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 16px Inter,sans-serif;text-align:left;cursor:pointer}
+.cpi span{font-weight:400;font-size:13px;color:var(--mute);white-space:nowrap}
+.cpi.all{border-style:dashed}
+.cpi[aria-current=true]{border:2px solid var(--green)}
+.cpi:focus-visible,.cpx:focus-visible,.selbar button:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.selbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 14px;margin:4px 0 8px}
+.selbar b{flex:1;font:700 17px/1.25 "Inter Tight",Inter,sans-serif}
+.selbar button{flex:none;min-height:40px;padding:0 12px;border-radius:9px;border:0;background:var(--ink);color:var(--bg);font:600 14px Inter,sans-serif;cursor:pointer}
 .pdfv{position:fixed;inset:0;z-index:30;background:#2a2f35;display:flex;flex-direction:column;zoom:calc(1 / var(--z,1))}
 .pdfbar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:#16191c;color:#fff}
 .ptitle{flex:1;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -231,7 +244,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 3.0 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 3.1 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -250,8 +263,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       <button class="chip" data-f="cl" aria-pressed="false">Conto lavoro</button>
     </div>
     <div class="seg" role="group" aria-label="Vista">
-      <button id="vCli" aria-pressed="true">Per cliente</button>
-      <button id="vDat" aria-pressed="false">Per data</button>
+      <button id="vDat" aria-pressed="true">Per data</button>
+      <button id="vCli" aria-pressed="false">Per cliente</button>
     </div>
   </div>
   <div class="count" id="count"></div>
@@ -306,6 +319,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 </div>
 
+<div id="cpick" class="cpick" hidden role="dialog" aria-label="Scegli il cliente">
+  <div class="cpbar"><div class="cptitle">Scegli il cliente</div><button type="button" class="cpx" id="cpClose" aria-label="Chiudi">✕</button></div>
+  <div class="cplist" id="cpList"></div>
+</div>
 <div id="pdfv" class="pdfv" hidden role="dialog" aria-label="Disegno">
   <div class="pdfbar">
     <button type="button" class="pbtn" id="pdfClose" aria-label="Chiudi">✕</button>
@@ -321,6 +338,7 @@ const MESIL=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','A
 const GIORNI=['dom','lun','mar','mer','gio','ven','sab'];
 const eur=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
 const eur2=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+const righe=n=>n===1?'1 riga':num(n)+' righe';
 const num=v=>v.toLocaleString('it-IT',{maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fd=s=>{if(!s)return '–';const[y,m,d]=s.split('-');return d+'/'+m+'/'+y};
@@ -346,7 +364,7 @@ function route(){
   window.scrollTo(0,0);
   if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen()}
 window.addEventListener('hashchange',route);
-document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
+document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
 for(const b of document.querySelectorAll('.back'))b.addEventListener('click',()=>{const t=backTo;backTo=null;location.hash=t||'home'});
 
@@ -365,9 +383,9 @@ $('fsReset').addEventListener('click',()=>{fsI=2;applyFs()});
 applyFs();
 
 /* ================= ORDINI ================= */
-let D=[],filt='all',view='cli',query='',openCli=new Set(),limit=150;
-try{const s=JSON.parse(localStorage.getItem('ordini-vista')||'{}');if(s.view)view=s.view;if(s.filt&&s.filt!=='d30')filt=s.filt}catch(e){}
-const saveV=()=>{try{localStorage.setItem('ordini-vista',JSON.stringify({view,filt}))}catch(e){}};
+let D=[],filt='all',view='dat',selCli=null,query='',openCli=new Set(),limit=150;
+try{const s=JSON.parse(localStorage.getItem('ordini-vista')||'{}');if(s.filt&&s.filt!=='d30')filt=s.filt}catch(e){}
+const saveV=()=>{try{localStorage.setItem('ordini-vista',JSON.stringify({filt}))}catch(e){}};
 const pass=r=>{
   if(filt==='late'&&!r.late)return false;
   if(filt==='nw'&&!(r.ref&&r.ref>=nwA&&r.ref<=nwB))return false;
@@ -503,17 +521,26 @@ function renderOrd(){
   for(const b of document.querySelectorAll('.chip'))b.setAttribute('aria-pressed',b.dataset.f===filt);
   $('vCli').setAttribute('aria-pressed',view==='cli');$('vDat').setAttribute('aria-pressed',view==='dat');
   const L=D.filter(pass);
-  $('count').textContent=L.length?`${num(L.length)} righe · ${eur(L.reduce((a,r)=>a+r.tot,0))}`:'';
-  if(!L.length){$('out').innerHTML='<div class="empty">Nessun ordine con questi criteri.</div>';return}
+  $('count').textContent=L.length?righe(L.length):'';
+  const bar=view==='cli'&&selCli&&selCli!=='*'?`<div class="selbar"><b>${esc(selCli)}</b><button type="button" id="cpOpen">Cambia</button></div>`:view==='cli'?`<div class="selbar"><b>Tutti i clienti</b><button type="button" id="cpOpen">Scegli</button></div>`:'';
+  const LL=view==='cli'&&selCli&&selCli!=='*'?L.filter(r=>r.c===selCli):L;
+  if(view==='cli')$('count').textContent=LL.length?righe(LL.length):'';
+  if(!LL.length){$('out').innerHTML=bar+'<div class="empty">Nessun ordine con questi criteri.</div>';return}
+  if(view==='cli'&&selCli&&selCli!=='*'){
+    let h='',cur='';
+    for(const r of LL){const k=!r.ref?'nd':r.late?'late':r.ref.slice(0,7);
+      if(k!==cur){cur=k;h+=`<div class="month${k==='late'?' late':''}">${k==='nd'?'Senza data':k==='late'?'In ritardo':MESIL[+k.slice(5)-1]+' '+k.slice(0,4)}</div>`}
+      h+=rowHtml(r,false)}
+    $('out').innerHTML=bar+`<div class="list">${h}</div>`;return}
   if(view==='cli'){
     const g=new Map();
     for(const r of L){if(!g.has(r.c))g.set(r.c,[]);g.get(r.c).push(r)}
-    const G=[...g].map(([c,rs])=>({c,rs,tot:rs.reduce((a,r)=>a+r.tot,0),late:rs.filter(r=>r.late).length})).sort((a,b)=>b.tot-a.tot);
+    const G=[...g].map(([c,rs])=>({c,rs,late:rs.filter(r=>r.late).length})).sort((a,b)=>a.c.localeCompare(b.c,'it'));
     const auto=G.length===1||(query&&G.length<=3);
-    $('out').innerHTML=G.map(x=>{const op=auto||openCli.has(x.c);
+    $('out').innerHTML=bar+G.map(x=>{const op=auto||openCli.has(x.c);
       return `<div class="cl"><button class="cl-head" data-c="${esc(x.c)}" aria-expanded="${op}">
       <span class="cl-name">${esc(x.c)}</span><span class="arr">${op?'⌃':'⌄'}</span>
-      <span class="cl-meta">${x.rs.length} righe${x.late?` · <span class="late">${x.late} in ritardo</span>`:''} · prossima: ${fd(x.rs.find(r=>r.ref&&r.ref>=today)?.ref)}</span></button>
+      <span class="cl-meta">${righe(x.rs.length)}${x.late?` · <span class="late">${x.late} in ritardo</span>`:''} · prossima: ${fd(x.rs.find(r=>r.ref&&r.ref>=today)?.ref)}</span></button>
       ${op?`<div class="rows">${x.rs.map(r=>rowHtml(r,false)).join('')}</div>`:''}</div>`}).join('');
   }else{
     let h='',cur='';
@@ -525,11 +552,20 @@ function renderOrd(){
     $('out').innerHTML=`<div class="list">${h}</div>`}}
 const syncOrd=()=>{limit=150;saveV();renderOrd()};
 document.querySelector('.chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b){filt=b.dataset.f;syncOrd()}});
-$('vCli').addEventListener('click',()=>{view='cli';syncOrd()});
-$('vDat').addEventListener('click',()=>{view='dat';syncOrd()});
-$('reset').addEventListener('click',()=>{$('q').value='';query='';filt='all';openCli.clear();syncOrd();window.scrollTo({top:0})});
+function openPicker(){
+  const all=[...new Set(D.map(r=>r.c))].sort((a,b)=>a.localeCompare(b,'it'));
+  const cnt=c=>D.filter(r=>r.c===c&&pass(r)).length;
+  $('cpList').innerHTML=`<button class="cpi all" type="button" data-c="*" aria-current="${selCli==='*'}">Tutti i clienti<span>${righe(D.filter(pass).length)}</span></button>`+
+    all.map(c=>`<button class="cpi" type="button" data-c="${esc(c)}" aria-current="${selCli===c}">${esc(c)}<span>${righe(cnt(c))}</span></button>`).join('');
+  $('cpick').hidden=false;$('cpList').scrollTop=0}
+$('vCli').addEventListener('click',openPicker);
+$('cpClose').addEventListener('click',()=>{$('cpick').hidden=true});
+$('cpList').addEventListener('click',e=>{const b=e.target.closest('.cpi');if(!b)return;selCli=b.dataset.c;view='cli';openCli.clear();$('cpick').hidden=true;syncOrd();window.scrollTo({top:0})});
+$('vDat').addEventListener('click',()=>{view='dat';selCli=null;syncOrd()});
+$('reset').addEventListener('click',()=>{$('q').value='';query='';filt='all';view='dat';selCli=null;openCli.clear();syncOrd();window.scrollTo({top:0})});
 let tm;$('q').addEventListener('input',e=>{clearTimeout(tm);tm=setTimeout(()=>{query=e.target.value.trim().toLowerCase();limit=150;renderOrd()},120)});
 $('out').addEventListener('click',e=>{
+  if(e.target.id==='cpOpen'){openPicker();return}
   const dw=e.target.closest('.dwg');if(dw){if(dw.dataset.f)openDwg(dw.dataset.f);return}
   const j=e.target.closest('.jump');if(j){jumpStorico(j.dataset.k,'ordini');return}
   if(e.target.closest('.det'))return;
