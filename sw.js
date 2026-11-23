@@ -1,6 +1,6 @@
 // Ordini aperti: funziona anche offline. Il codice dell'app sta in cache,
 // i dati degli ordini restano solo sul telefono (non passano da qui).
-const CACHE = 'ordini-v1';
+const CACHE = 'ordini-v3';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

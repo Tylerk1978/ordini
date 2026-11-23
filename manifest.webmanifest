@@ -1,6 +1,6 @@
 {
-  "name": "Ordini aperti",
-  "short_name": "Ordini",
+  "name": "Ordini aperti FM",
+  "short_name": "Ordini FM",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
