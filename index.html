@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 3.8 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 3.9 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -188,6 +188,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .chart+div{margin-top:22px}
 .vrow{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--card)}
 .vrow .day{background:var(--panel)}
+.vrow.arow{grid-template-columns:minmax(0,1fr)}
+.arow .cod{padding-right:14px}
 .vrow{position:relative;cursor:pointer}
 .vrow.open .det{display:block}
 .vrow .det .dwg{margin-top:0}
@@ -269,7 +271,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 3.8 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 3.9 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -313,12 +315,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       <select id="ra" class="sel" aria-label="Anno"><option value="">Tutti gli anni</option></select>
     </div>
   </div>
-  <div class="sum">
-    <div><span>Articoli</span><b id="rN">–</b></div>
-    <div><span>Quantità</span><b id="rQ">–</b></div>
-    <div><span>Importo</span><b id="rI">–</b></div>
-  </div>
-  <details class="yrs" id="rYrs"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
+  <details class="yrs" id="rYrs" style="margin-top:12px"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
   <div id="rOut"></div>
 </section>
 
@@ -669,14 +666,14 @@ function renderArc(){
   if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
   const keys=new Set(A.map(a=>a.k.toLowerCase()));
   const SL=w.length?S0.filter(r=>keys.has(r.k.toLowerCase())):S0;
-  $('rN').textContent=num(A.length);$('rQ').textContent=num(A.reduce((s,a)=>s+a.q,0));$('rI').textContent=eur(A.reduce((s,a)=>s+a.t,0));
   const Y=new Map();for(const r of SL)if(r.y)Y.set(r.y,(Y.get(r.y)||0)+r.t);
   const ys=[...Y].sort((a,b)=>a[0]-b[0]);const mx=Math.max(1,...ys.map(x=>x[1]));
   $('rChart').innerHTML=ys.map(([y,t])=>`<div class="cb${t===mx?' mx':''}"><em>${short(t)}</em><i style="height:${Math.max(1,t/mx*100*0.82).toFixed(1)}%"></i><u>'${String(y).slice(2)}</u></div>`).join('');
   $('rYrOut').innerHTML=ys.length?ys.map(([y,t])=>`<div class="yr"><span>${y}</span><i><u style="width:${(t/mx*100).toFixed(1)}%"></u></i><b>${eur(t)}</b></div>`).join(''):'<div class="src">Nessun dato.</div>';
+  if(!w.length&&!rc&&!ra){$('rOut').innerHTML='<div class="empty">Cerca un codice o una descrizione, oppure scegli un cliente o un anno.</div>';return}
   if(!A.length){$('rOut').innerHTML='<div class="empty">Nessun articolo con questi criteri.</div>';return}
   let h=A.slice(0,rlim).map(a=>{const cl=[...a.cl];const cls=cl.slice(0,2).join(', ')+(cl.length>2?` +${cl.length-2}`:'');
-    return `<div class="vrow" tabindex="0">${findDwg(a.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(a.last,false)}<div>
+    return `<div class="vrow arow" tabindex="0">${findDwg(a.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}<div>
     <div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
     <div class="nums"><span><b>${num(a.n)}</b> ${a.n===1?'vendita':'vendite'}</span><span><b>${num(a.q)}</b> pz</span><span><b>${eur(a.t)}</b></span></div></div>
     <div class="det"><div><span>Prima vendita</span><span>${fd(a.first)}</span></div><div><span>Ultima vendita</span><span>${fd(a.last)}</span></div>
