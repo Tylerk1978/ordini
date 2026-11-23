@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.5 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 4.8 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -289,7 +289,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.5 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 4.8 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -654,6 +654,7 @@ $('cgOut').addEventListener('click',e=>{
 
 /* ================= ARCHIVIO LAVORI ================= */
 let rq='',rc='',ra='',rlim=100,rSel=null,rScroll=0;
+const ESCLUSI=new Set(['00','01','02','03','04','05','06','07','08','09','10','11','14']); // codici generici non legati a un cliente: fuori dall'Archivio Lavori
 const short=v=>v>=1e6?(v/1e6).toLocaleString('it-IT',{maximumFractionDigits:1})+' M':v>=1e3?Math.round(v/1e3)+' k':Math.round(v)+'';
 function aggr(rows){const G=new Map();
   for(const r of rows){const key=r.k.toLowerCase();let a=G.get(key);
@@ -690,7 +691,7 @@ function renderArc(){
     $('yrsSlot').replaceWith(yb);
     return}
   const w=rq?rq.split(/\s+/):[];
-  const S0=V.filter(r=>(!rc||r.c===rc)&&(!ra||r.y===+ra));
+  const S0=V.filter(r=>!ESCLUSI.has(r.k.trim())&&(!rc||r.c===rc)&&(!ra||r.y===+ra));
   let A=aggr(S0);
   if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
   if(rc)A.sort((a,b)=>a.k.localeCompare(b.k,'it',{numeric:true}));
