@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ordini">
+<meta name="theme-color" content="#16191c">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Ordini aperti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: sala controllo di un'officina, asciutta e leggibile al volo dal telefono
+   IDEA: il tabellone degli ordini appeso in reparto: un numero grande, strisce sottili, rosso solo per i ritardi
+   PICTURE: la lista ordini stessa, con il valore in ordine come lettura principale
+   COLOUR and TYPE: acciaio #d5dbe0, nero, bianco, rosso allarme #e8251a; notte #16191c; Inter Tight + Inter
+   LAYOUT: lettura principale a sinistra e strisce a destra sopra i 760px, tutto in colonna sul telefono */
+:root{color-scheme:light dark;
+--bg:light-dark(#eef1f3,#16191c);--panel:light-dark(#d5dbe0,#22272c);--card:light-dark(#fff,#1d2125);
+--ink:light-dark(#0d0f11,#f1f3f5);--mute:light-dark(#56606a,#9aa4ad);--line:light-dark(#c3cad1,#333a41);
+--red:#e8251a;--redbg:light-dark(#fde6e4,#3a1d1b);--amb:light-dark(#8a5a00,#f0b64a);--ambbg:light-dark(#fff1d6,#3a2f18)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%}
+h1,.big,.cl-name{font-family:"Inter Tight",Inter,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) max(4vw,14px,env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) max(4vw,14px,env(safe-area-inset-left))}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.upd{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;background:var(--ink);color:var(--bg);font:600 15px Inter,sans-serif;cursor:pointer}
+.upd input{display:none}
+.upd:focus-within{outline:3px solid var(--red);outline-offset:2px}
+.start{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:18px}
+.start h2{font:700 22px/1.2 "Inter Tight",Inter,sans-serif;margin:0 0 8px}
+.start ol{padding-left:20px;margin:8px 0 16px}
+.msg{margin-top:10px;font-size:14px}.msg.err{color:var(--red);font-weight:600}
+[hidden]{display:none!important}
+header h1{font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0}
+header p{margin:4px 0 0;color:var(--mute);font-size:14px}
+.board{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:18px 0}
+.read{background:var(--ink);color:var(--bg);border-radius:14px;padding:18px 20px}
+.read .lab{font-size:14px;opacity:.75}
+.big{font-size:clamp(38px,10vw,58px);font-weight:700;line-height:1;margin-top:6px;white-space:nowrap}
+.strips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.strip{background:var(--panel);border-radius:10px;padding:10px 12px;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.strip b{display:block;font-family:"Inter Tight",Inter,system-ui,sans-serif;font-size:22px;white-space:nowrap}
+.strip span{font-size:13px;color:var(--mute)}
+.strip.alarm{background:var(--red);color:#fff}.strip.alarm span{color:#fff;opacity:.85}
+@media(min-width:760px){.board{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}.read{display:flex;flex-direction:column;justify-content:center}}
+.bar{position:sticky;top:0;padding-top:max(10px,env(safe-area-inset-top))!important;z-index:5;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line)}
+.search{width:100%;font:16px Inter,sans-serif;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:46px}
+.search:focus,.chip:focus-visible,.seg button:focus-visible,.row:focus-visible,.cl-head:focus-visible,.strip:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
+.chip{flex:none;min-height:38px;padding:0 14px;border-radius:19px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:500 14px Inter,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:flex;gap:4px;margin-top:8px;background:var(--panel);border-radius:10px;padding:3px}
+.seg button{flex:1;min-height:40px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--card);box-shadow:0 1px 3px #0003}
+.count{font-size:13px;color:var(--mute);margin:12px 2px 6px}
+.cl{background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid var(--line);overflow:hidden}
+.cl-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;width:100%;padding:12px 14px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;min-height:56px}
+.cl-name{font-weight:700;font-size:17px;line-height:1.2}
+.cl-sum{font-family:"Inter Tight",Inter,system-ui,sans-serif;font-weight:700;font-size:17px;white-space:nowrap;text-align:right}
+.cl-meta{font-size:13px;color:var(--mute);grid-column:1/-1}
+.cl-meta .late{color:var(--red);font-weight:600}
+.rows{border-top:1px solid var(--line)}
+.month{font:600 13px Inter;color:var(--mute);margin:16px 2px 6px}
+.month.late{color:var(--red)}
+.row{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--card);cursor:pointer}
+.list>.row{border:1px solid var(--line);border-radius:12px;margin-bottom:6px}
+.rows .row:last-child{border-bottom:0}
+.day{text-align:center;border-radius:8px;background:var(--panel);padding:5px 0;align-self:start}
+.day b{display:block;font:700 20px/1.1 "Inter Tight",Inter,system-ui,sans-serif}.day span{font-size:12px;color:var(--mute)}
+.day.late{background:var(--red);color:#fff}.day.late span{color:#fff}
+.day.none b{font-size:15px}
+.cod{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.desc{font-size:14px;color:var(--mute);line-height:1.35;margin-top:1px}
+.who{font-size:13px;margin-top:3px}
+.nums{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:14px;margin-top:4px}
+.nums b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font-size:12px;font-weight:600;border-radius:5px;padding:1px 6px;margin-right:4px;white-space:nowrap}
+.tag.cf{background:var(--ambbg);color:var(--amb)}.tag.cl{background:var(--panel)}.tag.lt{background:var(--redbg);color:var(--red)}
+.det{grid-column:1/-1;display:none;font-size:14px;background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:4px}
+.row.open .det{display:block}
+.det div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.det div span:first-child{color:var(--mute);flex:none}.det div span:last-child{text-align:right;overflow-wrap:anywhere}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.more{display:block;width:100%;min-height:44px;margin:6px 0;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter;cursor:pointer}
+footer{font-size:13px;color:var(--mute);margin-top:24px}
+@media(prefers-reduced-motion:no-preference){.cl,.list>.row{animation:in .25s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div><h1>Ordini aperti</h1><p id="src">Nessun dato caricato</p></div>
+  <label class="upd" id="updBtn" hidden>Aggiorna<input type="file" class="fileIn" accept=".xlsm,.xlsx,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+</header>
+<div class="msg" id="msg" role="status"></div>
+
+<section class="start" id="start" hidden>
+  <h2>Carica il file Commerciale</h2>
+  <p>L'app legge il foglio <b>Ordini</b> del file Excel e tiene i dati solo su questo telefono, anche offline.</p>
+  <ol><li>Tocca il pulsante qui sotto.</li><li>Scegli <b>Commerciale_FM_articoli.xlsm</b> (per esempio da OneDrive, nell'app File).</li><li>Per aggiornare in futuro usa <b>Aggiorna</b> in alto.</li></ol>
+  <label class="upd">Scegli il file Excel<input type="file" class="fileIn" accept=".xlsm,.xlsx,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+</section>
+<div id="app" hidden>
+
+<section class="board" aria-label="Riepilogo">
+  <div class="read"><div class="lab">Valore totale in ordine</div><div class="big" id="kTot">–</div><div class="lab" id="kSub" style="margin-top:6px"></div></div>
+  <div class="strips">
+    <button class="strip" data-go="y26"><span>Consegna 2026</span><b id="k26">–</b></button>
+    <button class="strip" data-go="y27"><span>Consegna dal 2027</span><b id="k27">–</b></button>
+    <button class="strip alarm" data-go="late"><span>Righe in ritardo</span><b id="kLate">–</b></button>
+    <button class="strip" data-go="conf"><span>Da confermare</span><b id="kConf">–</b></button>
+  </div>
+</section>
+
+<div class="bar">
+  <input id="q" class="search" type="search" placeholder="Cerca cliente, codice, descrizione, n. ordine" autocomplete="off" aria-label="Cerca">
+  <div class="chips" role="group" aria-label="Filtri">
+    <button class="chip" data-f="all" aria-pressed="true">Tutti</button>
+    <button class="chip" data-f="late" aria-pressed="false">In ritardo</button>
+    <button class="chip" data-f="d30" aria-pressed="false">Prossimi 30 giorni</button>
+    <button class="chip" data-f="y26" aria-pressed="false">Entro il 2026</button>
+    <button class="chip" data-f="y27" aria-pressed="false">Dal 2027</button>
+    <button class="chip" data-f="conf" aria-pressed="false">Da confermare</button>
+    <button class="chip" data-f="cl" aria-pressed="false">Conto lavoro</button>
+  </div>
+  <div class="seg" role="group" aria-label="Vista">
+    <button id="vCli" aria-pressed="true">Per cliente</button>
+    <button id="vDat" aria-pressed="false">Per data</button>
+  </div>
+</div>
+
+<div class="count" id="count"></div>
+<main id="out"><div class="empty">Caricamento ordini…</div></main>
+</div>
+<footer>Data di riferimento: consegna concordata se presente, altrimenti la data promessa. "In ritardo" = data già passata e riga ancora aperta.</footer>
+</div>
+
+<script>
+{
+const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const MESIL=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const eur=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const eur2=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+const num=v=>v.toLocaleString('it-IT');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fd=s=>{if(!s)return '–';const[y,m,d]=s.split('-');return d+'/'+m+'/'+y};
+const t0=new Date();const today=t0.getFullYear()+'-'+String(t0.getMonth()+1).padStart(2,'0')+'-'+String(t0.getDate()).padStart(2,'0');
+const in30=(()=>{const d=new Date(t0);d.setDate(d.getDate()+30);return d.toISOString().slice(0,10)})();
+
+let D=[],filt='all',view='cli',query='',openCli=new Set(),limit=150;
+const $=id=>document.getElementById(id);
+try{const s=JSON.parse(localStorage.getItem('ordini-vista')||'{}');if(s.view)view=s.view;if(s.filt)filt=s.filt}catch(e){}
+const save=()=>{try{localStorage.setItem('ordini-vista',JSON.stringify({view,filt}))}catch(e){}};
+
+const pass=r=>{
+  if(filt==='late'&&!r.late)return false;
+  if(filt==='d30'&&!(r.ref&&r.ref>=today&&r.ref<=in30))return false;
+  if(filt==='y26'&&!(r.ac<=2026))return false;
+  if(filt==='y27'&&!(r.ac>=2027))return false;
+  if(filt==='conf'&&!r.conf)return false;
+  if(filt==='cl'&&r.t!=='CL')return false;
+  if(query){const w=query.split(/\s+/);for(const p of w)if(!r.s.includes(p))return false}
+  return true};
+
+const dayBox=r=>{
+  if(!r.ref)return '<div class="day none"><b>n.d.</b><span>data</span></div>';
+  const[y,m,d]=r.ref.split('-');
+  return `<div class="day${r.late?' late':''}"><b>${+d}</b><span>${MESI[+m-1]} ${y.slice(2)}</span></div>`};
+
+const rowHtml=(r,showCli)=>`<div class="row" tabindex="0" data-i="${r.i}">${dayBox(r)}<div>
+  <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
+  ${showCli?`<div class="who">${esc(r.c)}</div>`:''}
+  <div class="nums"><span><b>${num(r.n)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.tot)}</b></span></div>
+  <div style="margin-top:4px">${r.late?'<span class="tag lt">In ritardo</span>':''}${r.conf?'<span class="tag cf">Da confermare</span>':''}${r.t==='CL'?'<span class="tag cl">Conto lavoro</span>':''}${r.o?`<span class="tag cl">Ord. ${esc(r.o)}</span>`:''}</div>
+  </div><div class="det">
+  <div><span>Cliente</span><span>${esc(r.c)}</span></div>
+  <div><span>Ordine cliente</span><span>${esc(r.o||'–')} · riga ${esc(r.rg)}</span></div>
+  <div><span>COC</span><span>${esc(r.coc)} / ${esc(r.a)}</span></div>
+  <div><span>Consegna promessa</span><span>${fd(r.dp)}</span></div>
+  <div><span>Finestra consegna</span><span>${r.da||r.dx?fd(r.da)+' → '+fd(r.dx):'–'}</span></div>
+  <div><span>Spedizione concordata</span><span>${fd(r.ds)}${r.ck?' ('+esc(r.ck)+')':''}</span></div>
+  ${r.cig?`<div><span>CIG</span><span>${esc(r.cig)}</span></div>`:''}
+  ${r.no?`<div><span>Note</span><span>${esc(r.no)}</span></div>`:''}
+  </div></div>`;
+
+function render(){
+  const L=D.filter(pass);
+  const tot=L.reduce((a,r)=>a+r.tot,0);
+  $('count').textContent=L.length?`${num(L.length)} righe · ${eur(tot)}`:'';
+  if(!L.length){$('out').innerHTML='<div class="empty">Nessun ordine con questi criteri.</div>';return}
+  if(view==='cli'){
+    const g=new Map();
+    for(const r of L){if(!g.has(r.c))g.set(r.c,[]);g.get(r.c).push(r)}
+    const G=[...g].map(([c,rs])=>({c,rs,tot:rs.reduce((a,r)=>a+r.tot,0),late:rs.filter(r=>r.late).length})).sort((a,b)=>b.tot-a.tot);
+    const auto=G.length===1||(query&&G.length<=3);
+    $('out').innerHTML=G.map(x=>{const op=auto||openCli.has(x.c);
+      return `<div class="cl"><button class="cl-head" data-c="${esc(x.c)}" aria-expanded="${op}">
+      <span class="cl-name">${esc(x.c)}</span><span class="cl-sum">${eur(x.tot)}</span>
+      <span class="cl-meta">${x.rs.length} righe${x.late?` · <span class="late">${x.late} in ritardo</span>`:''} · prossima: ${fd(x.rs.find(r=>r.ref&&r.ref>=today)?.ref)}</span></button>
+      ${op?`<div class="rows">${x.rs.map(r=>rowHtml(r,false)).join('')}</div>`:''}</div>`}).join('');
+  }else{
+    const S=L.slice(0,limit);let h='',cur='';
+    for(const r of S){
+      const k=!r.ref?'nd':r.late?'late':r.ref.slice(0,7);
+      if(k!==cur){cur=k;h+=`<div class="month${k==='late'?' late':''}">${k==='nd'?'Senza data':k==='late'?'In ritardo':MESIL[+k.slice(5)-1]+' '+k.slice(0,4)}</div>`}
+      h+=rowHtml(r,true)}
+    if(L.length>limit)h+=`<button class="more" id="more">Mostra altre ${num(Math.min(150,L.length-limit))} righe</button>`;
+    $('out').innerHTML=`<div class="list">${h}</div>`;
+  }
+}
+
+function sync(){
+  for(const b of document.querySelectorAll('.chip'))b.setAttribute('aria-pressed',b.dataset.f===filt);
+  $('vCli').setAttribute('aria-pressed',view==='cli');$('vDat').setAttribute('aria-pressed',view==='dat');
+  limit=150;save();render()}
+
+document.querySelector('.chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b){filt=b.dataset.f;sync()}});
+document.querySelector('.strips').addEventListener('click',e=>{const b=e.target.closest('.strip');if(b){filt=b.dataset.go;sync();document.querySelector('.bar').scrollIntoView({behavior:'smooth'})}});
+$('vCli').addEventListener('click',()=>{view='cli';sync()});
+$('vDat').addEventListener('click',()=>{view='dat';sync()});
+let tm;$('q').addEventListener('input',e=>{clearTimeout(tm);tm=setTimeout(()=>{query=e.target.value.trim().toLowerCase();limit=150;render()},120)});
+$('out').addEventListener('click',e=>{
+  if(e.target.id==='more'){limit+=150;render();return}
+  const h=e.target.closest('.cl-head');
+  if(h){const c=h.dataset.c;openCli.has(c)?openCli.delete(c):openCli.add(c);render();return}
+  const r=e.target.closest('.row');if(r)r.classList.toggle('open')});
+$('out').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('row')){e.preventDefault();e.target.classList.toggle('open')}});
+
+function load(rows,info){
+  D=rows.map((r,i)=>{const ref=r.ds||r.dp||null;
+    return {...r,i,ref,late:!!ref&&ref<today,conf:/x/i.test(r.q),s:[r.c,r.k,r.x,r.o,r.no,r.cig].join(' ').toLowerCase()}});
+  D.sort((a,b)=>(a.ref||'9999').localeCompare(b.ref||'9999'));
+  const T=D.reduce((a,r)=>a+r.tot,0);
+  $('kTot').textContent=eur(T);
+  $('kSub').textContent=`${num(D.length)} righe d'ordine · ${new Set(D.map(r=>r.c)).size} clienti`;
+  $('k26').textContent=eur(D.filter(r=>r.ac<=2026).reduce((a,r)=>a+r.tot,0));
+  $('k27').textContent=eur(D.filter(r=>r.ac>=2027).reduce((a,r)=>a+r.tot,0));
+  $('kLate').textContent=num(D.filter(r=>r.late).length);
+  $('kConf').textContent=num(D.filter(r=>r.conf).length);
+  $('src').textContent=`${info.nome} · file del ${info.file} · caricato il ${info.quando}`;
+  $('start').hidden=true;$('app').hidden=false;$('updBtn').hidden=false;
+  sync()}
+
+/* ---- lettura del file Excel (xlsx/xlsm) direttamente sul telefono ---- */
+const td=new TextDecoder();
+async function unzip(buf){
+  const v=new DataView(buf),u8=new Uint8Array(buf);let e=-1;
+  for(let p=buf.byteLength-22;p>=Math.max(0,buf.byteLength-70000);p--)if(v.getUint32(p,true)===0x06054b50){e=p;break}
+  if(e<0)throw new Error('Il file non sembra un file Excel.');
+  const n=v.getUint16(e+10,true);let p=v.getUint32(e+16,true);const F={};
+  for(let k=0;k<n;k++){
+    const meth=v.getUint16(p+10,true),cs=v.getUint32(p+20,true),nl=v.getUint16(p+28,true),xl=v.getUint16(p+30,true),cl=v.getUint16(p+32,true),off=v.getUint32(p+42,true);
+    const name=td.decode(u8.subarray(p+46,p+46+nl));F[name]={meth,cs,off};p+=46+nl+xl+cl}
+  return async name=>{const f=F[name];if(!f)return null;
+    const ds=f.off+30+v.getUint16(f.off+26,true)+v.getUint16(f.off+28,true);const raw=u8.subarray(ds,ds+f.cs);
+    if(f.meth===0)return td.decode(raw);
+    if(typeof DecompressionStream==='undefined')throw new Error('Questo iPhone è troppo vecchio per leggere il file (serve iOS 16.4 o successivo).');
+    return await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()}}
+const xml=t=>new DOMParser().parseFromString(t,'application/xml');
+const colIdx=ref=>{let c=0;for(const ch of ref.replace(/\d+/g,''))c=c*26+ch.charCodeAt(0)-64;return c-1};
+const norm=s=>String(s??'').toLowerCase().replace(/\s+/g,' ').trim();
+const toIso=v=>{
+  if(v===null||v===undefined||v==='')return null;
+  if(typeof v==='number'){if(v<20000||v>80000)return null;const d=new Date(Date.UTC(1899,11,30)+Math.round(v)*864e5);return d.toISOString().slice(0,10)}
+  const m=String(v).match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if(m){const y=m[3].length===2?'20'+m[3]:m[3];return `${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`}
+  return null};
+async function readOrdini(file){
+  const get=await unzip(await file.arrayBuffer());
+  const wb=xml(await get('xl/workbook.xml')),rels=xml(await get('xl/_rels/workbook.xml.rels'));
+  const sh=[...wb.getElementsByTagName('sheet')].find(x=>norm(x.getAttribute('name'))==='ordini');
+  if(!sh)throw new Error('Nel file non trovo il foglio "Ordini".');
+  const rid=sh.getAttribute('r:id');
+  let target=[...rels.getElementsByTagName('Relationship')].find(r=>r.getAttribute('Id')===rid).getAttribute('Target');
+  target=target.startsWith('/')?target.slice(1):'xl/'+target;
+  const sst=[];const ssx=await get('xl/sharedStrings.xml');
+  if(ssx)for(const si of xml(ssx).getElementsByTagName('si')){let t='';for(const x of si.getElementsByTagName('t'))if(x.parentNode.nodeName!=='rPh')t+=x.textContent;sst.push(t)}
+  const doc=xml(await get(target));const R=[];
+  for(const row of doc.getElementsByTagName('row')){const a=[];
+    for(const c of row.getElementsByTagName('c')){const t=c.getAttribute('t');const vv=c.getElementsByTagName('v')[0];let val=null;
+      if(t==='s')val=vv?sst[+vv.textContent]:null;
+      else if(t==='inlineStr')val=c.textContent;
+      else if(t==='str'||t==='e')val=vv?vv.textContent:null;
+      else if(t==='b')val=vv?vv.textContent==='1':null;
+      else val=vv?+vv.textContent:null;
+      a[colIdx(c.getAttribute('r'))]=val}
+    R.push(a)}
+  const hi=R.findIndex(a=>a&&a.some(x=>norm(x)==='cliente')&&a.some(x=>norm(x)==='codice prodotto'));
+  if(hi<0)throw new Error('Nel foglio Ordini non trovo le intestazioni (Cliente, Codice prodotto…).');
+  const H=R[hi].map(norm);const ix=n=>H.indexOf(n);
+  const C={c:ix('cliente'),t:ix('tipo ordine'),o:ix('n. ordine cliente'),a:ix('anno'),coc:ix('coc'),rg:ix('riga'),k:ix('codice prodotto'),x:ix('descrizione prodotto'),
+    n:ix('n.'),p:ix('€ cad'),tot:ix('€ tot'),dp:ix('data consegna (promessa)'),q:ix('?'),da:ix('consegna da'),dx:ix('consegna a'),ds:ix('data spedizione (concordata)'),
+    ck:ix('check'),cig:ix('cig'),no:ix('note'),ac:ix('anno consegna')};
+  const g=(a,k)=>C[k]<0?null:a[C[k]];const s=v=>v===null||v===undefined?'':String(v).trim();const n=v=>typeof v==='number'?v:(parseFloat(String(v??'').replace(',','.'))||0);
+  const out=[];
+  for(const a of R.slice(hi+1)){if(!a||!s(g(a,'c')))continue;
+    const dp=toIso(g(a,'dp')),ds=toIso(g(a,'ds'));
+    let ac=n(g(a,'ac'));if(!ac){const r=ds||dp;ac=r?+r.slice(0,4):0}
+    out.push({c:s(g(a,'c')),t:/conto/i.test(s(g(a,'t')))?'CL':'CO',o:s(g(a,'o')),a:s(g(a,'a')),coc:s(g(a,'coc')),rg:s(g(a,'rg')),k:s(g(a,'k')),x:s(g(a,'x')),
+      n:n(g(a,'n')),p:n(g(a,'p')),tot:n(g(a,'tot'))||n(g(a,'n'))*n(g(a,'p')),dp,da:toIso(g(a,'da')),dx:toIso(g(a,'dx')),ds,ck:s(g(a,'ck')),cig:s(g(a,'cig')),no:s(g(a,'no')),ac,q:s(g(a,'q'))})}
+  if(!out.length)throw new Error('Il foglio Ordini è vuoto.');
+  return out}
+
+const stamp=d=>d.toLocaleDateString('it-IT')+' '+d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+for(const inp of document.querySelectorAll('.fileIn'))inp.addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  $('msg').className='msg';$('msg').textContent='Leggo il file…';
+  try{const rows=await readOrdini(f);
+    const info={nome:f.name,file:f.lastModified?stamp(new Date(f.lastModified)):'–',quando:stamp(new Date())};
+    try{localStorage.setItem('ordini-dati',JSON.stringify({rows,info}))}catch(x){}
+    openCli.clear();load(rows,info);$('msg').textContent=`Caricate ${num(rows.length)} righe d'ordine.`;setTimeout(()=>{$('msg').textContent=''},4000)}
+  catch(err){$('msg').className='msg err';$('msg').textContent=err.message||'Non riesco a leggere il file.'}});
+
+let saved=null;try{saved=JSON.parse(localStorage.getItem('ordini-dati')||'null')}catch(e){}
+if(saved&&saved.rows&&saved.rows.length)load(saved.rows,saved.info);else{$('start').hidden=false;$('out').innerHTML=''}
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
