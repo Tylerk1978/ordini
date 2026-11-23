@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.9 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 5.1 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -197,6 +197,11 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
 .vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
+.alink{display:flex;align-items:center;gap:10px;min-height:52px;margin:-2px 0 10px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;line-height:1.3}
+.alink svg{flex:none;width:22px;height:22px;color:var(--green)}
+.alink small{display:block;font-size:12px;color:var(--mute)}
+.alink.off{color:var(--mute);font-size:13px}.alink.off svg{color:var(--mute)}
+.alink:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .kbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
 .kt{font-weight:600;font-size:15px;margin:2px 0 8px}
 .kyr{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:4px 0;font-size:14px;font-variant-numeric:tabular-nums}
@@ -206,6 +211,13 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .kth{font-size:12px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
 .kth span:nth-child(n+3),.krow>span:nth-child(n+3){text-align:right}
 .krow{padding:6px 4px;border-radius:6px;font-size:14px}.krow.z{background:var(--bg)}
+.kth2,.kart{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(86px,auto);gap:0 10px;align-items:center;font-variant-numeric:tabular-nums}
+.kth2{font-size:12px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
+.kth2 span:nth-child(n+2),.kart>span:nth-child(n+2){text-align:right;white-space:nowrap}
+.kart{padding:7px 4px;border-radius:6px;font-size:14px;cursor:pointer}.kart.z{background:var(--bg)}
+.kart.op{background:var(--panel)}
+.kart .tt{justify-self:end;font-weight:700;color:var(--green);background:light-dark(#e3efe8,#1f3a2b);border-radius:6px;padding:3px 6px}
+.ksub{margin:4px 0 10px 10px;padding-left:8px;border-left:3px solid var(--green)}
 .krow .day{padding:2px 0}.krow .day b{font-size:16px}.krow .day span{font-size:11px}
 .ka{min-width:0}.ka b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ka small{display:block;font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .krow .tt{justify-self:end;font-weight:700;color:var(--green);background:light-dark(#e3efe8,#1f3a2b);border-radius:6px;padding:3px 6px;white-space:nowrap}
@@ -306,7 +318,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.9 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 5.1 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -737,7 +749,17 @@ $('rOut').addEventListener('click',e=>{if(e.target.id==='rMore'){rlim+=100;rende
 $('rOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.k&&!rSel){e.preventDefault();e.target.click()}});
 
 /* ================= CLIENTI ================= */
-let kq='',kSel=null,klim=100,kScroll=0;
+const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+function addrBox(name){
+  const A=DATA.clienti;
+  if(!A)return `<div class="alink off">${PIN}<span>Indirizzo non ancora caricato: premi <b>Aggiorna</b> in prima pagina e ricarica il file Excel.</span></div>`;
+  const nk=x=>x.toLowerCase().replace(/[^a-z0-9]/g,'');const k=nk(name);
+  const x=A.find(c=>c.n===name)||A.find(c=>nk(c.n)===k)||A.find(c=>{const a=nk(c.n);return a&&(k.startsWith(a)||a.startsWith(k))});
+  if(!x||!(x.via||x.paese))return `<div class="alink off">${PIN}<span>Indirizzo non presente nel foglio Clienti</span></div>`;
+  const ind=[x.via,[x.cap,x.paese].filter(Boolean).join(' ')+(x.prov?` (${x.prov})`:'')].filter(Boolean).join(', ');
+  const q=encodeURIComponent([x.via,x.cap,x.paese,x.prov,'Italia'].filter(Boolean).join(', '));
+  return `<a class="alink" href="https://maps.apple.com/?q=${encodeURIComponent(name)}&address=${q}">${PIN}<span>${esc(ind)}<small>Tocca per aprire in Mappe</small></span></a>`}
+let kq='',kSel=null,klim=100,kScroll=0,kOpen=new Set();
 function renderCli(){
   $('kSearch').hidden=!!kSel;
   if(kSel){
@@ -747,10 +769,15 @@ function renderCli(){
     let h=`<button class="backall" type="button" id="kBack">‹ Tutti i clienti</button>
       <div class="vrow arow sel1"><div><div class="cod" style="font-size:18px">${esc(kSel)}</div>
       <div class="nums"><span><b>${num(R.length)}</b> ${R.length===1?'vendita':'vendite'}</span><span>Totale <b>${eur(TT)}</b></span></div></div></div>
+      ${addrBox(kSel)}
       <div class="kbox"><div class="kt">Fatturato anno per anno</div>${ys.map(([y,o])=>`<div class="kyr"><span>${y}</span><i><u style="width:${Math.max(1,o.t/mx*100).toFixed(1)}%"></u></i><b>${eur(o.t)}</b></div>`).join('')}</div>
-      <div class="kbox"><div class="kt">Vendite</div><div class="kth"><span>Data</span><span>Articolo</span><span>Pezzi</span><span>Totale €</span></div>`;
-    h+=R.slice(0,klim).map((r,i)=>`<div class="krow${i%2?' z':''}">${dayBox(r.d,false)}<span class="ka"><b>${esc(r.k)}</b><small>${esc(r.x)}</small></span><span>${num(r.q)}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('');
-    if(R.length>klim)h+=`<button class="more" id="kMore">Mostra altre ${num(Math.min(100,R.length-klim))} vendite (di ${num(R.length)})</button>`;
+      <div class="kbox"><div class="kt">Vendite</div><div class="kth2"><span>Articolo</span><span>Pezzi</span><span>Totale €</span></div>`;
+    const G=new Map();for(const r of R){const key=r.k.toLowerCase();let a=G.get(key);if(!a){a={k:r.k,x:r.x,q:0,t:0,rs:[]};G.set(key,a)}a.q+=r.q;a.t+=r.t;a.rs.push(r)}
+    const A=[...G.values()].sort((a,b)=>b.t-a.t);
+    h+=A.slice(0,klim).map((a,i)=>{const op=kOpen.has(a.k.toLowerCase());
+      return `<div class="kart${i%2?' z':''}${op?' op':''}" data-a="${esc(a.k.toLowerCase())}"><span class="ka"><b>${esc(a.k)}</b><small>${esc(a.x)}</small></span><span>${num(a.q)}</span><span class="tt">${eur2(a.t).replace(' €','')}</span></div>`+
+      (op?`<div class="ksub"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+a.rs.map((r,j)=>`<div class="srow2${j%2?' z':''}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('')+'</div>':'')}).join('');
+    if(A.length>klim)h+=`<button class="more" id="kMore">Mostra altri ${num(Math.min(100,A.length-klim))} articoli (di ${num(A.length)})</button>`;
     $('kOut').innerHTML=h+'</div>';return}
   const m=new Map();for(const r of V){const o=m.get(r.c)||{n:0,t:0,last:''};o.n++;o.t+=r.t;if(r.d>o.last)o.last=r.d;m.set(r.c,o)}
   const w=kq?kq.split(/\s+/):[];
@@ -760,7 +787,8 @@ let kt;$('kq').addEventListener('input',e=>{clearTimeout(kt);kt=setTimeout(()=>{
 $('kOut').addEventListener('click',e=>{
   if(e.target.id==='kMore'){klim+=100;renderCli();return}
   if(e.target.id==='kBack'){kSel=null;renderCli();requestAnimationFrame(()=>window.scrollTo(0,kScroll));return}
-  const b=e.target.closest('.kc');if(b){kScroll=window.scrollY;kSel=b.dataset.c;klim=100;renderCli();window.scrollTo({top:0})}});
+  const ar=e.target.closest('.kart');if(ar){const k=ar.dataset.a;kOpen.has(k)?kOpen.delete(k):kOpen.add(k);const y=window.scrollY;renderCli();window.scrollTo(0,y);return}
+  const b=e.target.closest('.kc');if(b){kScroll=window.scrollY;kSel=b.dataset.c;klim=100;kOpen.clear();renderCli();window.scrollTo({top:0})}});
 
 /* ================= DATI VENDITE ================= */
 let V=[];
@@ -850,6 +878,14 @@ function exOrdini(R){
       n:N(g(a,'n')),p:N(g(a,'p')),tot:N(g(a,'tot'))||N(g(a,'n'))*N(g(a,'p')),dp,da:toIso(g(a,'da')),dx:toIso(g(a,'dx')),ds,ck:S(g(a,'ck')),cig:S(g(a,'cig')),no:S(g(a,'no')),ac,q:S(g(a,'q'))})}
   return out}
 
+function exPeople(R,key){
+  if(!R)return null;const hi=headerAt(R,[key,'via']);if(hi<0)return null;
+  const H=R[hi].map(norm);const ix=n=>H.indexOf(n);
+  const c={n:ix(key),via:ix('via'),cap:ix('cap'),paese:ix('paese'),prov:ix('comune')};
+  const g=(a,k)=>c[k]<0?'':S(a[c[k]]);const out=[];
+  for(const a of R.slice(hi+1)){if(!a||!g(a,'n'))continue;
+    out.push({n:g(a,'n'),via:g(a,'via'),cap:g(a,'cap').replace(/\.0$/,''),paese:g(a,'paese'),prov:g(a,'prov')})}
+  return out}
 function exAnag(R){
   if(!R)return {};const hi=headerAt(R,['codice']);if(hi<0)return {};
   const H=R[hi].map(norm);const c=H.indexOf('codice');const pp=H.findIndex(h=>h.startsWith('percorso disegno'));if(pp<0)return {};
@@ -897,7 +933,8 @@ for(const inp of document.querySelectorAll('.fileIn'))inp.addEventListener('chan
     const consegne=exConsegne(await sheet('consegne'));
     const vendite=exVendite(await sheet('vendite'));
     const anag=exAnag(await sheet('anagrafica articoli'));
-    const data={ordini,consegne,vendite,anag,info:{nome:f.name,file:f.lastModified?stamp(new Date(f.lastModified)):'–',quando:stamp(new Date())}};
+    const clienti=exPeople(await sheet('clienti'),'cliente');
+    const data={ordini,consegne,vendite,anag,clienti,info:{nome:f.name,file:f.lastModified?stamp(new Date(f.lastModified)):'–',quando:stamp(new Date())}};
     const ok=await dbPut('dati',data);
     load(data);
     $('msg').textContent=`Caricati ${num(ordini.length)} ordini, ${num(vendite.length)} vendite e ${consegne.length} calendari di consegna.`+(ok?'':' Attenzione: non riesco a salvarli sul telefono, andranno ricaricati alla prossima apertura.');
