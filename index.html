@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.1 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 4.3 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -179,6 +179,12 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .yr i{display:block;height:10px;border-radius:5px;background:var(--panel);overflow:hidden}
 .yr i u{display:block;height:100%;background:var(--ink)}
 .yr b{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.yt{width:100%;border-collapse:collapse;font-size:14px;margin:2px 0 8px;font-variant-numeric:tabular-nums}
+.yt th{font-size:12px;font-weight:600;color:var(--mute);text-align:right;padding:4px 0 6px;border-bottom:1px solid var(--line)}
+.yt th:first-child,.yt td:first-child{text-align:left;width:22%}
+.yt td{text-align:right;padding:6px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+.yt td:nth-child(2),.yt th:nth-child(2){width:36%;padding-right:10px}
+.yt tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--ink)}
 .chart{display:flex;align-items:flex-end;gap:4px;height:170px;padding:18px 0 0;margin:4px 0 10px;border-bottom:1px solid var(--line)}
 .chart .cb{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}
 .chart .cb i{display:block;width:100%;max-width:34px;border-radius:5px 5px 0 0;background:var(--green)}
@@ -191,6 +197,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
 .vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
+.cronl{padding-bottom:6px}
+.cronl .srow{margin-bottom:6px;background:var(--bg)}
 .backall{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:2px 0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
 .backall:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .arow .cod{padding-right:14px}
@@ -271,7 +279,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.1 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 4.3 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -315,7 +323,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       <select id="ra" class="sel" aria-label="Anno"><option value="">Tutti gli anni</option></select>
     </div>
   </div>
-  <details class="yrs" id="rYrs"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
+  <details class="yrs" id="rYrs"><summary>Storico per anno</summary><div id="rYrOut"></div></details>
   <div id="rOut"></div>
 </section>
 
@@ -644,10 +652,13 @@ function aggr(rows){const G=new Map();
     if(a.lp===null&&r.p>0){a.lp=r.p;a.lpd=r.d}}
   return [...G.values()]}
 function chart(rows){
-  const Y=new Map();for(const r of rows)if(r.y)Y.set(r.y,(Y.get(r.y)||0)+r.t);
-  const ys=[...Y].sort((a,b)=>a[0]-b[0]);const mx=Math.max(1,...ys.map(x=>x[1]));
-  $('rChart').innerHTML=ys.map(([y,t])=>`<div class="cb${t===mx?' mx':''}"><em>${short(t)}</em><i style="height:${Math.max(1,t/mx*100*0.82).toFixed(1)}%"></i><u>'${String(y).slice(2)}</u></div>`).join('');
-  $('rYrOut').innerHTML=ys.length?ys.map(([y,t])=>`<div class="yr"><span>${y}</span><i><u style="width:${(t/mx*100).toFixed(1)}%"></u></i><b>${eur(t)}</b></div>`).join(''):'<div class="src">Nessun dato.</div>'}
+  const Y=new Map();for(const r of rows)if(r.y){const o=Y.get(r.y)||{q:0,t:0};o.q+=r.q;o.t+=r.t;Y.set(r.y,o)}
+  const ys=[...Y].sort((a,b)=>a[0]-b[0]);
+  if(!ys.length){$('rYrOut').innerHTML='<div class="src">Nessun dato.</div>';return}
+  const TQ=ys.reduce((s,[,o])=>s+o.q,0),TT=ys.reduce((s,[,o])=>s+o.t,0);
+  $('rYrOut').innerHTML=`<table class="yt"><thead><tr><th>Anno</th><th>Volumi</th><th>Valori</th></tr></thead><tbody>`+
+    ys.map(([y,o])=>`<tr><td>${y}</td><td>${num(o.q)} pz</td><td>${eur(o.t)}</td></tr>`).join('')+
+    `</tbody><tfoot><tr><td>Totale</td><td>${num(TQ)} pz</td><td>${eur(TT)}</td></tr></tfoot></table>`}
 const cardHtml=(a,open)=>{const cl=[...a.cl];const cls=open?cl.join(', '):cl.slice(0,2).join(', ')+(cl.length>2?` +${cl.length-2}`:'');
   return `<div class="vrow arow${open?' open sel1':''}" tabindex="0" data-k="${esc(a.k)}">${findDwg(a.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}<div>
     <div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
@@ -663,10 +674,10 @@ function renderArc(){
     if(!R.length){$('rOut').innerHTML=`<div class="selbar"><b>Articolo non trovato</b><button type="button" id="rBack">‹ Tutti</button></div>`;return}
     const a=aggr(R)[0];
     $('rOut').innerHTML=`<button class="backall" type="button" id="rBack">‹ Tutti gli articoli</button>`+cardHtml(a,true)+
-      '<div id="yrsSlot"></div>'+`<div class="month">Storico vendite · ${righeV(R.length)}</div>`+
+      '<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Cronologia vendite · ${righeV(R.length)}</summary><div class="cronl">`+
       R.map(r=>`<div class="vrow srow">${dayBox(r.d,false)}<div>
         <div class="nums" style="margin-top:0"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div>
-        ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div></div>`).join('');
+        ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div></div>`).join('')+'</div></details>';
     $('yrsSlot').replaceWith(yb);
     return}
   const w=rq?rq.split(/\s+/):[];
