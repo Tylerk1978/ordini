@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 3.5 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 3.6 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -114,18 +114,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(44px,11.6vw,68px);line-height:1;letter-spacing:-.01em}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
-.menu{display:grid;gap:9px;margin-top:clamp(8px,3.5vh,32px)}
-.mbtn{display:grid;grid-template-columns:50px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:70px;padding:9px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.menu{display:grid;gap:10px;margin-top:clamp(12px,5vh,44px)}
+.mbtn{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;min-height:85px;padding:12px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
-.mico{width:50px;height:50px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
-.mico svg{width:28px;height:28px}
+.mico{width:56px;height:56px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.mico svg{width:32px;height:32px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{margin-top:14px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:70px}
+.mupd{margin-top:18px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:85px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
-.mt{display:block;font:700 21px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
+.mt{display:block;font:700 22px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
 .ms{display:block;font-size:14px;color:var(--mute);margin-top:2px}
 .arr{font-size:30px;color:var(--mute)}
 .src{font-size:13px;color:var(--mute)}
@@ -237,10 +237,6 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M14 14h2M8 17h2"/></svg></span>
         <span><span class="mt">Date spedizioni</span></span><span class="arr">›</span>
       </button>
-      <button class="mbtn" data-go="anagrafiche" type="button">
-        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l6-4 6 4v13M15 21h6V11l-6-3M7 12h4M7 16h4"/></svg></span>
-        <span><span class="mt">Clienti e Fornitori</span></span><span class="arr">›</span>
-      </button>
       <button class="mbtn" data-go="impostazioni" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
         <span><span class="mt">Impostazioni</span></span><span class="arr">›</span>
@@ -261,7 +257,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 3.5 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 3.6 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -293,19 +289,6 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
   <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Date spedizioni</h2></div>
   <p class="src">Giorni di spedizione concordati, dal foglio Consegne. In rosso la prossima data; i giorni già passati sono barrati.</p>
   <div id="cgOut"></div>
-</section>
-
-<section id="v-anagrafiche" class="view" hidden>
-  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Clienti e Fornitori</h2></div>
-  <div class="bar">
-    <div class="seg" role="group" aria-label="Elenco">
-      <button id="aCli" aria-pressed="true">Clienti</button>
-      <button id="aFor" aria-pressed="false">Fornitori</button>
-    </div>
-    <input id="aq" class="search" type="search" placeholder="Cerca nome o paese" autocomplete="off" aria-label="Cerca clienti e fornitori" style="margin-top:8px">
-  </div>
-  <div class="count" id="aCount"></div>
-  <div id="aOut"></div>
 </section>
 
 <section id="v-impostazioni" class="view" hidden>
@@ -384,7 +367,7 @@ async function pdfOp(mode,fn){const db=await idb();return await new Promise((res
 async function dbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)});return true}catch(e){return false}}
 
 /* ---------- navigazione ---------- */
-const VIEWS=['home','ordini','consegne','vendite','impostazioni','anagrafiche'];
+const VIEWS=['home','ordini','consegne','vendite','impostazioni'];
 let DATA=null,keepScroll=null;
 function route(){
   let v=location.hash.slice(1);if(!VIEWS.includes(v)||(!DATA&&v!=='impostazioni'))v='home';
@@ -392,7 +375,7 @@ function route(){
   for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':backTo==='anagrafiche'?'‹ Clienti':'‹ Home';
   if(v==='ordini'&&keepScroll!==null){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
-  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen();else if(v==='anagrafiche')renderAna()}
+  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen()}
 window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
@@ -640,32 +623,6 @@ $('cgOut').addEventListener('click',e=>{
   if(e.target.closest('.det'))return;
   const r=e.target.closest('.row');if(r)r.classList.toggle('open')});
 
-/* ================= CLIENTI E FORNITORI ================= */
-let aTab='cli',aq='';
-const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
-const MAIL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';
-function renderAna(){
-  $('aCli').setAttribute('aria-pressed',aTab==='cli');$('aFor').setAttribute('aria-pressed',aTab==='for');
-  const A=(aTab==='cli'?DATA.clienti:DATA.fornitori)||null;
-  if(!A){$('aCount').textContent='';$('aOut').innerHTML='<div class="empty">Per vedere clienti e fornitori premi <b>Aggiorna</b> in prima pagina e ricarica il file Excel.</div>';return}
-  const w=aq?aq.split(/\s+/):[];
-  const L=A.filter(x=>w.every(p=>(x.n+' '+x.paese+' '+x.prov+' '+x.via).toLowerCase().includes(p)));
-  $('aCount').textContent=L.length===1?'1 '+(aTab==='cli'?'cliente':'fornitore'):num(L.length)+' '+(aTab==='cli'?'clienti':'fornitori');
-  if(!L.length){$('aOut').innerHTML='<div class="empty">Nessun risultato.</div>';return}
-  $('aOut').innerHTML=L.map(x=>{
-    const ind=[x.via,[x.cap,x.paese].filter(Boolean).join(' ')+(x.prov?` (${x.prov})`:'')].filter(Boolean).join(', ');
-    const q=encodeURIComponent([x.n,x.via,x.cap,x.paese,x.prov].filter(Boolean).join(', '));
-    const nOrd=aTab==='cli'?D.filter(r=>r.c===x.n).length:0;
-    return `<div class="ac"><h3>${esc(x.n)}</h3>${x.cod?`<div class="an">N. ${esc(x.cod)}</div>`:''}
-      ${ind?`<a class="alink" href="https://maps.apple.com/?q=${q}">${PIN}<span>${esc(ind)}</span></a>`:''}
-      ${x.mail?`<a class="alink" href="mailto:${esc(x.mail)}">${MAIL}<span>${esc(x.mail)}</span></a>`:''}
-      ${nOrd?`<button class="aord" type="button" data-c="${esc(x.n)}">Ordini aperti (${num(nOrd)}) ›</button>`:''}</div>`}).join('')}
-$('aCli').addEventListener('click',()=>{aTab='cli';renderAna()});
-$('aFor').addEventListener('click',()=>{aTab='for';renderAna()});
-let at;$('aq').addEventListener('input',e=>{clearTimeout(at);at=setTimeout(()=>{aq=e.target.value.trim().toLowerCase();renderAna()},120)});
-$('aOut').addEventListener('click',e=>{const b=e.target.closest('.aord');if(!b)return;
-  selCli=b.dataset.c;view='cli';filt='all';query='';$('q').value='';openCli.clear();backTo='anagrafiche';location.hash='ordini'});
-
 /* ================= STORICO VENDITE ================= */
 let V=[],vq='',vc='',va='',vlim=100;
 function fillSelects(){
@@ -779,14 +736,6 @@ function exOrdini(R){
       n:N(g(a,'n')),p:N(g(a,'p')),tot:N(g(a,'tot'))||N(g(a,'n'))*N(g(a,'p')),dp,da:toIso(g(a,'da')),dx:toIso(g(a,'dx')),ds,ck:S(g(a,'ck')),cig:S(g(a,'cig')),no:S(g(a,'no')),ac,q:S(g(a,'q'))})}
   return out}
 
-function exPeople(R,key){
-  if(!R)return null;const hi=headerAt(R,[key,'via']);if(hi<0)return null;
-  const H=R[hi].map(norm);const ix=n=>H.indexOf(n);
-  const c={n:ix(key),cod:ix('n.'),via:ix('via'),cap:ix('cap'),paese:ix('paese'),prov:ix('comune'),mail:H.findIndex(h=>h.includes('mail'))};
-  const g=(a,k)=>c[k]<0?'':S(a[c[k]]);const out=[];
-  for(const a of R.slice(hi+1)){if(!a||!g(a,'n'))continue;
-    out.push({n:g(a,'n'),cod:g(a,'cod').replace(/\.0$/,''),via:g(a,'via'),cap:g(a,'cap').replace(/\.0$/,''),paese:g(a,'paese'),prov:g(a,'prov'),mail:g(a,'mail')})}
-  return out.sort((a,b)=>a.n.localeCompare(b.n,'it'))}
 function exAnag(R){
   if(!R)return {};const hi=headerAt(R,['codice']);if(hi<0)return {};
   const H=R[hi].map(norm);const c=H.indexOf('codice');const pp=H.findIndex(h=>h.startsWith('percorso disegno'));if(pp<0)return {};
@@ -834,9 +783,7 @@ for(const inp of document.querySelectorAll('.fileIn'))inp.addEventListener('chan
     const consegne=exConsegne(await sheet('consegne'));
     const vendite=exVendite(await sheet('vendite'));
     const anag=exAnag(await sheet('anagrafica articoli'));
-    const clienti=exPeople(await sheet('clienti'),'cliente');
-    const fornitori=exPeople(await sheet('fornitori'),'fornitore');
-    const data={ordini,consegne,vendite,anag,clienti,fornitori,info:{nome:f.name,file:f.lastModified?stamp(new Date(f.lastModified)):'–',quando:stamp(new Date())}};
+    const data={ordini,consegne,vendite,anag,info:{nome:f.name,file:f.lastModified?stamp(new Date(f.lastModified)):'–',quando:stamp(new Date())}};
     const ok=await dbPut('dati',data);
     load(data);
     $('msg').textContent=`Caricati ${num(ordini.length)} ordini, ${num(vendite.length)} vendite e ${consegne.length} calendari di consegna.`+(ok?'':' Attenzione: non riesco a salvarli sul telefono, andranno ricaricati alla prossima apertura.');
