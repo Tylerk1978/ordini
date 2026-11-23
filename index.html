@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- Ordini aperti FM · versione 1.7 · 23/11/2026 -->
+<!-- Ordini aperti FM · versione 1.9 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -27,9 +27,11 @@
 --red:#e8251a;--green:light-dark(#1d5a3a,#4fa877);--redbg:light-dark(#fde6e4,#3a1d1b);--amb:light-dark(#8a5a00,#f0b64a);--ambbg:light-dark(#fff1d6,#3a2f18)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
+html,body{touch-action:pan-x pan-y;-webkit-user-select:none;user-select:none}
+input,select,textarea,.cod,.desc,.det{-webkit-user-select:text;user-select:text}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%}
 h1,.cl-name{font-family:"Inter Tight",Inter,sans-serif}
-.wrap{max-width:1000px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) max(4vw,14px,env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) max(4vw,14px,env(safe-area-inset-left))}
+.wrap{max-width:1000px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) max(4vw,14px,env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(4vw,14px,env(safe-area-inset-left))}
 .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .upd{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:10px;background:var(--ink);color:var(--bg);font:600 15px Inter,sans-serif;cursor:pointer}
 .upd input{display:none}
@@ -37,7 +39,7 @@ h1,.cl-name{font-family:"Inter Tight",Inter,sans-serif}
 .start{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:18px}
 .start h2{font:700 22px/1.2 "Inter Tight",Inter,sans-serif;margin:0 0 8px}
 .start ol{padding-left:20px;margin:8px 0 16px}
-.msg{margin-top:10px;font-size:14px}.msg.err{color:var(--red);font-weight:600}
+.msg{font-size:14px}.msg:empty{display:none}.msg.err{color:var(--red);font-weight:600}
 [hidden]{display:none!important}
 header h1{font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0}
 header p{margin:4px 0 0;color:var(--mute);font-size:14px}
@@ -90,18 +92,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 @media(prefers-reduced-motion:no-preference){.cl,.list>.row{animation:in .25s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
 
 /* home */
-.home{min-height:calc(100vh - 100px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:28px;padding-top:min(14vh,110px)}
-.ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:24px}
-.home h1{margin:0;font-size:clamp(40px,11vw,64px);line-height:1}
+.home{min-height:calc(100svh / var(--z,1) - 34px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:18px;padding-top:6px}
+.ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
+.home h1{margin:0;font-size:clamp(38px,10vw,56px);line-height:1}
 .home h1 span{display:block;color:var(--green)}
-.menu{display:grid;gap:12px}
-.mbtn{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:80px;padding:14px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.menu{display:grid;gap:10px}
+.mbtn{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:68px;padding:10px 14px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
-.mico{width:52px;height:52px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.mico{width:46px;height:46px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .mico svg{width:28px;height:28px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:72px}
+.mupd{background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:68px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
@@ -195,7 +197,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 1.7 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 1.9 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -295,10 +297,14 @@ window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 for(const b of document.querySelectorAll('.back'))b.addEventListener('click',()=>{location.hash='home'});
 
+/* ---------- niente zoom con le dita ---------- */
+for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+
 /* ================= DIMENSIONE TESTO ================= */
 const FS=[80,90,100,110,120,135,150];let fsI=2;
 try{const k=FS.indexOf(+localStorage.getItem('ordini-testo'));if(k>=0)fsI=k}catch(e){}
-function applyFs(){const z=FS[fsI]/100;document.body.style.zoom=z;$('fsVal').textContent=FS[fsI]+'%';$('fsMinus').disabled=fsI===0;$('fsPlus').disabled=fsI===FS.length-1;
+function applyFs(){const z=FS[fsI]/100;document.body.style.zoom=z;document.documentElement.style.setProperty('--z',z);$('fsVal').textContent=FS[fsI]+'%';$('fsMinus').disabled=fsI===0;$('fsPlus').disabled=fsI===FS.length-1;
   try{localStorage.setItem('ordini-testo',FS[fsI])}catch(e){}}
 $('fsMinus').addEventListener('click',()=>{if(fsI>0){fsI--;applyFs()}});
 $('fsPlus').addEventListener('click',()=>{if(fsI<FS.length-1){fsI++;applyFs()}});
