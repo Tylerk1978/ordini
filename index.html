@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 2.7 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 2.8 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -174,6 +174,14 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .fsb:focus-visible,.fsr:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .fsv{text-align:center}.fsv b{display:block;font:700 26px "Inter Tight",Inter,sans-serif}.fsv span{font-size:14px;color:var(--mute)}
 .fsr{margin-top:14px;width:100%;min-height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
+.pdfv{position:fixed;inset:0;z-index:30;background:#2a2f35;display:flex;flex-direction:column;zoom:calc(1 / var(--z,1))}
+.pdfbar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:#16191c;color:#fff}
+.ptitle{flex:1;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbtn{flex:none;min-width:44px;height:44px;border-radius:10px;border:0;background:#2f363d;color:#fff;font:700 20px Inter,sans-serif;display:grid;place-items:center;cursor:pointer}
+.pbtn:disabled{opacity:.35}
+.pbody{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 10px calc(10px + env(safe-area-inset-bottom));touch-action:pan-x pan-y}
+.pbody canvas{display:block;margin:0 auto 10px;background:#fff;box-shadow:0 2px 10px #0006}
+.pbody .pmsg{color:#fff;text-align:center;padding:40px 10px}
 .loading{position:fixed;inset:0;background:#0008;display:grid;place-items:center;z-index:20;color:#fff;font-weight:600}
 </style>
 </head>
@@ -216,7 +224,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 2.7 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 2.8 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -291,6 +299,16 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 </div>
 
+<div id="pdfv" class="pdfv" hidden role="dialog" aria-label="Disegno">
+  <div class="pdfbar">
+    <button type="button" class="pbtn" id="pdfClose" aria-label="Chiudi">✕</button>
+    <div class="ptitle" id="pdfTitle"></div>
+    <button type="button" class="pbtn" id="pdfOut" aria-label="Rimpicciolisci">−</button>
+    <button type="button" class="pbtn" id="pdfIn" aria-label="Ingrandisci">+</button>
+    <button type="button" class="pbtn" id="pdfShare" aria-label="Condividi"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button>
+  </div>
+  <div class="pbody" id="pdfBody"></div>
+</div>
 <script>
 {
 const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
@@ -378,12 +396,35 @@ function findDwg(code){
 const dwgBtns=k=>{const L=findDwg(k);
   if(!L.length)return '<button class="dwg" type="button" disabled>Disegno non disponibile</button>';
   return L.map(f=>`<button class="dwg" type="button" data-f="${esc(f)}">Disegno${L.length>1?' · '+esc(f.replace(/\.pdf$/i,'')):''}</button>`).join('')};
+let PDFJS=null,pdfDoc=null,pdfName='',pdfBlob=null,pdfZ=0;const PZ=[1,1.5,2,3];
 async function openDwg(name){
-  try{const blob=await pdfOp('readonly',st=>st.get(name));if(!blob)throw 0;
-    const url=URL.createObjectURL(new Blob([blob],{type:'application/pdf'}));
-    const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),120000)}
-  catch(e){alertMsg('Non riesco ad aprire il disegno.')}}
+  const v=$('pdfv');v.hidden=false;$('pdfTitle').textContent=name.replace(/\.pdf$/i,'');
+  $('pdfBody').innerHTML='<div class="pmsg">Apro il disegno…</div>';pdfZ=0;pdfName=name;pdfDoc=null;
+  try{
+    const blob=await pdfOp('readonly',st=>st.get(name));if(!blob)throw new Error('Disegno non trovato sul telefono.');
+    pdfBlob=blob;
+    if(!PDFJS){PDFJS=await import('./pdf.min.mjs');PDFJS.GlobalWorkerOptions.workerSrc='./pdf.worker.min.mjs'}
+    pdfDoc=await PDFJS.getDocument({data:new Uint8Array(await blob.arrayBuffer())}).promise;
+    await drawPdf()}
+  catch(e){$('pdfBody').innerHTML=`<div class="pmsg">Non riesco ad aprire il disegno.<br><small>${esc(e&&e.message||'')}</small></div>`}}
+async function drawPdf(){
+  if(!pdfDoc)return;const body=$('pdfBody');const W=body.clientWidth-20;const z=PZ[pdfZ];
+  $('pdfOut').disabled=pdfZ===0;$('pdfIn').disabled=pdfZ===PZ.length-1;
+  body.innerHTML='';
+  for(let n=1;n<=pdfDoc.numPages;n++){
+    const pg=await pdfDoc.getPage(n);const v1=pg.getViewport({scale:1});
+    const cssW=W*z,scale=cssW/v1.width;let dpr=Math.min(window.devicePixelRatio||1,3);
+    const cssH=v1.height*scale;while(cssW*dpr*cssH*dpr>15e6&&dpr>1)dpr-=.25;
+    const vp=pg.getViewport({scale:scale*dpr});const c=document.createElement('canvas');
+    c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);c.style.width=cssW+'px';c.style.height=cssH+'px';
+    body.appendChild(c);await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise}}
+$('pdfClose').addEventListener('click',()=>{$('pdfv').hidden=true;$('pdfBody').innerHTML='';if(pdfDoc){try{pdfDoc.cleanup&&pdfDoc.cleanup()}catch(e){}pdfDoc=null}});
+$('pdfIn').addEventListener('click',()=>{if(pdfZ<PZ.length-1){pdfZ++;drawPdf()}});
+$('pdfOut').addEventListener('click',()=>{if(pdfZ>0){pdfZ--;drawPdf()}});
+$('pdfShare').addEventListener('click',async()=>{if(!pdfBlob)return;
+  const f=new File([pdfBlob],pdfName,{type:'application/pdf'});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:pdfName});
+    else{const u=URL.createObjectURL(f);location.href=u}}catch(e){}});
 const alertMsg=t=>{const m=$('msg');if(m){m.className='msg err';m.textContent=t}};
 $('dwgIn').addEventListener('change',async e=>{
   const fs=[...e.target.files].filter(f=>/\.pdf$/i.test(f.name));e.target.value='';if(!fs.length)return;
