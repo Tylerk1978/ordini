@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Ordini aperti FM · versione 1.5 · 23/11/2026 -->
+<!-- Ordini aperti FM · versione 1.6 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -24,7 +24,7 @@
 :root{color-scheme:light dark;
 --bg:light-dark(#eef1f3,#16191c);--panel:light-dark(#d5dbe0,#22272c);--card:light-dark(#fff,#1d2125);
 --ink:light-dark(#0d0f11,#f1f3f5);--mute:light-dark(#56606a,#9aa4ad);--line:light-dark(#c3cad1,#333a41);
---red:#e8251a;--redbg:light-dark(#fde6e4,#3a1d1b);--amb:light-dark(#8a5a00,#f0b64a);--ambbg:light-dark(#fff1d6,#3a2f18)}
+--red:#e8251a;--green:light-dark(#1d5a3a,#4fa877);--redbg:light-dark(#fde6e4,#3a1d1b);--amb:light-dark(#8a5a00,#f0b64a);--ambbg:light-dark(#fff1d6,#3a2f18)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%}
@@ -90,17 +90,17 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 @media(prefers-reduced-motion:no-preference){.cl,.list>.row{animation:in .25s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
 
 /* home */
-.home{min-height:calc(100vh - 120px);display:flex;flex-direction:column;justify-content:center;gap:28px;padding-block:24px}
-.ver{display:inline-flex;align-self:flex-start;align-items:center;height:28px;padding:0 10px;border-radius:14px;background:var(--panel);font-size:13px;font-weight:600;color:var(--mute);margin-top:-14px}
+.home{min-height:calc(100vh - 100px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:28px;padding-top:min(14vh,110px)}
+.ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:24px}
 .home h1{margin:0;font-size:clamp(40px,11vw,64px);line-height:1}
-.home h1 span{display:block;color:var(--red)}
+.home h1 span{display:block;color:var(--green)}
 .menu{display:grid;gap:12px}
-.mbtn{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:84px;padding:14px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.mbtn{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:80px;padding:14px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
 .mico{width:52px;height:52px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .mico svg{width:28px;height:28px}
-.mbtn:first-child .mico{background:var(--red);color:#fff}
+.mbtn:first-child .mico{background:var(--green);color:#fff}
 .mupd{background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:72px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
@@ -154,19 +154,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 <section id="v-home" class="view">
   <div class="home">
     <h1>Ordini aperti <span>FM</span></h1>
-    <div class="ver" id="ver">Versione 1.5 · 23/11/2026</div>
     <div class="menu">
       <button class="mbtn" data-go="ordini" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 11h6M9 15h6"/></svg></span>
-        <span><span class="mt">Ordini aperti</span><span class="ms" id="sOrd">–</span></span><span class="arr">›</span>
-      </button>
-      <button class="mbtn" data-go="consegne" type="button">
-        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M14 14h2M8 17h2"/></svg></span>
-        <span><span class="mt">Date spedizioni</span><span class="ms" id="sCons">–</span></span><span class="arr">›</span>
+        <span><span class="mt">Ordini aperti</span></span><span class="arr">›</span>
       </button>
       <button class="mbtn" data-go="vendite" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
-        <span><span class="mt">Storico vendite</span><span class="ms" id="sVen">–</span></span><span class="arr">›</span>
+        <span><span class="mt">Storico vendite</span></span><span class="arr">›</span>
+      </button>
+      <button class="mbtn" data-go="consegne" type="button">
+        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M14 14h2M8 17h2"/></svg></span>
+        <span><span class="mt">Date spedizioni</span></span><span class="arr">›</span>
       </button>
       <label class="mbtn mupd" id="homefoot" hidden>
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></span>
@@ -184,6 +183,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
+    <div class="ver" id="ver">Versione 1.6 · 23/11/2026</div>
   </div>
 </section>
 
@@ -394,9 +394,6 @@ function load(data){
   V.sort((a,b)=>(b.d||'').localeCompare(a.d||''));
   fillSelects();
   const C=data.consegne||[];
-  $('sOrd').textContent=`${num(D.length)} righe · ${eur(D.reduce((a,r)=>a+r.tot,0))}`;
-  $('sCons').textContent=C.length?C.map(b=>b.c).join(' · '):'Nessun calendario nel file';
-  $('sVen').textContent=V.length?`${num(V.length)} vendite dal ${Math.min(...V.map(r=>r.y).filter(Boolean))}`:'Nessuna vendita nel file';
   $('src').textContent=`Ricarica il file Excel · dati del ${data.info.file}`;
   $('start').hidden=true;$('homefoot').hidden=false;
   for(const b of document.querySelectorAll('.mbtn'))b.disabled=false;
@@ -519,7 +516,7 @@ for(const inp of document.querySelectorAll('.fileIn'))inp.addEventListener('chan
 (async()=>{
   const saved=await dbGet('dati');
   if(saved&&saved.ordini)load(saved);
-  else{$('start').hidden=false;for(const b of document.querySelectorAll('.mbtn'))b.disabled=true;$('sOrd').textContent=$('sCons').textContent=$('sVen').textContent='Carica prima il file Excel';route()}
+  else{$('start').hidden=false;for(const b of document.querySelectorAll('.mbtn'))b.disabled=true;route()}
 })();
 if('serviceWorker' in navigator&&location.protocol==='https:'){
   const hadCtrl=!!navigator.serviceWorker.controller;let reloaded=false;
