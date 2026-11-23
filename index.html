@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 2.9 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 3.0 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -168,6 +168,9 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .yr b{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
 .vrow{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--card)}
 .vrow .day{background:var(--panel)}
+.vrow{position:relative;cursor:pointer}
+.vrow.open .det{display:block}
+.vrow .det .dwg{margin-top:0}
 .set{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
 .set-t{font-weight:600;margin-bottom:12px}
 .fs{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:12px;align-items:center}
@@ -228,7 +231,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 2.9 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 3.0 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -585,16 +588,21 @@ function renderVen(){
   const ys=[...Y].filter(x=>x[0]).sort((a,b)=>a[0]-b[0]);const mx=Math.max(1,...ys.map(x=>x[1]));
   $('yrOut').innerHTML=ys.length?ys.map(([y,t])=>`<div class="yr"><span>${y}</span><i><u style="width:${Math.max(0,t/mx*100).toFixed(1)}%"></u></i><b>${eur(t)}</b></div>`).join(''):'<div class="src">Nessun dato.</div>';
   if(!L.length){$('vOut').innerHTML='<div class="empty">Nessuna vendita con questi criteri.</div>';return}
-  let h=L.slice(0,vlim).map(r=>`<div class="vrow">${dayBox(r.d,false)}<div>
+  let h=L.slice(0,vlim).map(r=>`<div class="vrow" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.d,false)}<div>
     <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div><div class="who">${esc(r.c)}</div>
-    <div class="nums"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div></div></div>`).join('');
+    <div class="nums"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div></div>
+    <div class="det">${dwgBtns(r.k)}</div></div>`).join('');
   if(L.length>vlim)h+=`<button class="more" id="vMore">Mostra altre ${num(Math.min(100,L.length-vlim))} righe (di ${num(L.length)})</button>`;
   $('vOut').innerHTML=h}
 let vt;$('vq').addEventListener('input',e=>{clearTimeout(vt);vt=setTimeout(()=>{vq=e.target.value.trim().toLowerCase();vlim=100;renderVen()},180)});
 $('vc').addEventListener('change',e=>{vc=e.target.value;vlim=100;renderVen()});
 $('va').addEventListener('change',e=>{va=e.target.value;vlim=100;renderVen()});
 $('vReset').addEventListener('click',()=>{vq=vc=va='';$('vq').value='';$('vc').value='';$('va').value='';vlim=100;renderVen();window.scrollTo({top:0})});
-$('vOut').addEventListener('click',e=>{if(e.target.id==='vMore'){vlim+=100;renderVen()}});
+$('vOut').addEventListener('click',e=>{if(e.target.id==='vMore'){vlim+=100;renderVen();return}
+  const dw=e.target.closest('.dwg');if(dw){if(dw.dataset.f)openDwg(dw.dataset.f);return}
+  if(e.target.closest('.det'))return;
+  const r=e.target.closest('.vrow');if(r)r.classList.toggle('open')});
+$('vOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('vrow')){e.preventDefault();e.target.classList.toggle('open')}});
 
 /* ================= CARICAMENTO DATI ================= */
 function load(data){
