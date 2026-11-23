@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 3.6 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 3.8 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -114,18 +114,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(44px,11.6vw,68px);line-height:1;letter-spacing:-.01em}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
-.menu{display:grid;gap:10px;margin-top:clamp(12px,5vh,44px)}
-.mbtn{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:16px;width:100%;min-height:85px;padding:12px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.menu{display:grid;gap:9px;margin-top:clamp(8px,3.5vh,32px)}
+.mbtn{display:grid;grid-template-columns:50px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:70px;padding:9px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
-.mico{width:56px;height:56px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
-.mico svg{width:32px;height:32px}
+.mico{width:50px;height:50px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.mico svg{width:28px;height:28px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{margin-top:18px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:85px}
+.mupd{margin-top:14px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:70px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
-.mt{display:block;font:700 22px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
+.mt{display:block;font:700 21px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
 .ms{display:block;font-size:14px;color:var(--mute);margin-top:2px}
 .arr{font-size:30px;color:var(--mute)}
 .src{font-size:13px;color:var(--mute)}
@@ -179,11 +179,19 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .yr i{display:block;height:10px;border-radius:5px;background:var(--panel);overflow:hidden}
 .yr i u{display:block;height:100%;background:var(--ink)}
 .yr b{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.chart{display:flex;align-items:flex-end;gap:4px;height:170px;padding:18px 0 0;margin:4px 0 10px;border-bottom:1px solid var(--line)}
+.chart .cb{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}
+.chart .cb i{display:block;width:100%;max-width:34px;border-radius:5px 5px 0 0;background:var(--green)}
+.chart .cb.mx i{background:var(--ink)}
+.chart .cb em{font-style:normal;font-size:10px;color:var(--mute);white-space:nowrap;margin-bottom:3px}
+.chart .cb u{text-decoration:none;position:absolute;bottom:-18px;font-size:11px;color:var(--mute)}
+.chart+div{margin-top:22px}
 .vrow{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--card)}
 .vrow .day{background:var(--panel)}
 .vrow{position:relative;cursor:pointer}
 .vrow.open .det{display:block}
 .vrow .det .dwg{margin-top:0}
+.vrow .det .jump{margin-top:6px}
 .set{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:12px}
 .set-t{font-weight:600;margin-bottom:12px}
 .fs{display:grid;grid-template-columns:64px minmax(0,1fr) 64px;gap:12px;align-items:center}
@@ -237,6 +245,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h2M14 14h2M8 17h2"/></svg></span>
         <span><span class="mt">Date spedizioni</span></span><span class="arr">›</span>
       </button>
+      <button class="mbtn" data-go="archivio" type="button">
+        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg></span>
+        <span><span class="mt">Archivio Lavori</span></span><span class="arr">›</span>
+      </button>
       <button class="mbtn" data-go="impostazioni" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
         <span><span class="mt">Impostazioni</span></span><span class="arr">›</span>
@@ -257,7 +269,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 3.6 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 3.8 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -289,6 +301,25 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
   <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Date spedizioni</h2></div>
   <p class="src">Giorni di spedizione concordati, dal foglio Consegne. In rosso la prossima data; i giorni già passati sono barrati.</p>
   <div id="cgOut"></div>
+</section>
+
+<section id="v-archivio" class="view" hidden>
+  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Archivio Lavori</h2></div>
+  <div class="bar">
+    <div class="reset-row"><button class="reset" id="rReset" type="button">↺ Azzera ricerca</button></div>
+    <input id="rq" class="search" type="search" placeholder="Cerca codice o descrizione" autocomplete="off" aria-label="Cerca nell'archivio lavori">
+    <div class="filters">
+      <select id="rc" class="sel" aria-label="Cliente"><option value="">Tutti i clienti</option></select>
+      <select id="ra" class="sel" aria-label="Anno"><option value="">Tutti gli anni</option></select>
+    </div>
+  </div>
+  <div class="sum">
+    <div><span>Articoli</span><b id="rN">–</b></div>
+    <div><span>Quantità</span><b id="rQ">–</b></div>
+    <div><span>Importo</span><b id="rI">–</b></div>
+  </div>
+  <details class="yrs" id="rYrs"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
+  <div id="rOut"></div>
 </section>
 
 <section id="v-impostazioni" class="view" hidden>
@@ -367,15 +398,15 @@ async function pdfOp(mode,fn){const db=await idb();return await new Promise((res
 async function dbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)});return true}catch(e){return false}}
 
 /* ---------- navigazione ---------- */
-const VIEWS=['home','ordini','consegne','vendite','impostazioni'];
-let DATA=null,keepScroll=null;
+const VIEWS=['home','ordini','consegne','vendite','impostazioni','archivio'];
+let DATA=null,keepScroll=null,keepFrom=null;
 function route(){
   let v=location.hash.slice(1);if(!VIEWS.includes(v)||(!DATA&&v!=='impostazioni'))v='home';
   for(const x of VIEWS)$('v-'+x).hidden=x!==v;
-  for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':backTo==='anagrafiche'?'‹ Clienti':'‹ Home';
-  if(v==='ordini'&&keepScroll!==null){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
+  for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':backTo==='archivio'?'‹ Archivio':'‹ Home';
+  if((v==='ordini'||v==='archivio')&&keepScroll!==null&&keepFrom===v){const y=keepScroll;keepScroll=null;v==='ordini'?renderOrd():renderArc();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
-  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen()}
+  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='vendite')renderVen();else if(v==='archivio')renderArc()}
 window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
@@ -508,8 +539,8 @@ $('dwgClear').addEventListener('click',async()=>{
 const lastSale=k=>{const kk=String(k).toLowerCase();const L=V.filter(v=>v.k.toLowerCase()===kk);
   if(!L.length)return '<div><span>Ultima vendita</span><span>nessuna</span></div>';
   const u=L[0],up=L.find(v=>v.p>0);return `<div><span>Ultima vendita</span><span>${fd(u.d)} · ${num(u.q)} pz</span></div><div><span>Ultimo prezzo</span><span>${up?`<b>${eur2(up.p)}</b> (${fd(up.d)})`:'–'}</span></div>`};
-function jumpStorico(k,from){vq=String(k).toLowerCase();vc='';va='';vlim=100;$('vq').value=k;$('vc').value='';$('va').value='';
-  if(from==='ordini')keepScroll=window.scrollY;backTo=from;location.hash='vendite'}
+function jumpStorico(k,from){vq=String(k).toLowerCase();vk=vq;vc='';va='';vlim=100;$('vq').value=k;$('vc').value='';$('va').value='';
+  if(from==='ordini'||from==='archivio')keepScroll=window.scrollY;keepFrom=from;backTo=from;location.hash='vendite'}
 const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div>
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
   <div class="who">${esc(r.c)}</div>
@@ -623,16 +654,58 @@ $('cgOut').addEventListener('click',e=>{
   if(e.target.closest('.det'))return;
   const r=e.target.closest('.row');if(r)r.classList.toggle('open')});
 
+/* ================= ARCHIVIO LAVORI ================= */
+let rq='',rc='',ra='',rlim=100;
+const short=v=>v>=1e6?(v/1e6).toLocaleString('it-IT',{maximumFractionDigits:1})+' M':v>=1e3?Math.round(v/1e3)+' k':Math.round(v)+'';
+function renderArc(){
+  const w=rq?rq.split(/\s+/):[];
+  const S0=V.filter(r=>(!rc||r.c===rc)&&(!ra||r.y===+ra));
+  const G=new Map();
+  for(const r of S0){const key=r.k.toLowerCase();let a=G.get(key);
+    if(!a){a={k:r.k,x:r.x,cl:new Set(),n:0,q:0,t:0,last:r.d,first:r.d,lp:null,lpd:null};G.set(key,a)}
+    a.cl.add(r.c);a.n++;a.q+=r.q;a.t+=r.t;if(r.d&&(!a.first||r.d<a.first))a.first=r.d;
+    if(a.lp===null&&r.p>0){a.lp=r.p;a.lpd=r.d}}
+  let A=[...G.values()];
+  if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
+  const keys=new Set(A.map(a=>a.k.toLowerCase()));
+  const SL=w.length?S0.filter(r=>keys.has(r.k.toLowerCase())):S0;
+  $('rN').textContent=num(A.length);$('rQ').textContent=num(A.reduce((s,a)=>s+a.q,0));$('rI').textContent=eur(A.reduce((s,a)=>s+a.t,0));
+  const Y=new Map();for(const r of SL)if(r.y)Y.set(r.y,(Y.get(r.y)||0)+r.t);
+  const ys=[...Y].sort((a,b)=>a[0]-b[0]);const mx=Math.max(1,...ys.map(x=>x[1]));
+  $('rChart').innerHTML=ys.map(([y,t])=>`<div class="cb${t===mx?' mx':''}"><em>${short(t)}</em><i style="height:${Math.max(1,t/mx*100*0.82).toFixed(1)}%"></i><u>'${String(y).slice(2)}</u></div>`).join('');
+  $('rYrOut').innerHTML=ys.length?ys.map(([y,t])=>`<div class="yr"><span>${y}</span><i><u style="width:${(t/mx*100).toFixed(1)}%"></u></i><b>${eur(t)}</b></div>`).join(''):'<div class="src">Nessun dato.</div>';
+  if(!A.length){$('rOut').innerHTML='<div class="empty">Nessun articolo con questi criteri.</div>';return}
+  let h=A.slice(0,rlim).map(a=>{const cl=[...a.cl];const cls=cl.slice(0,2).join(', ')+(cl.length>2?` +${cl.length-2}`:'');
+    return `<div class="vrow" tabindex="0">${findDwg(a.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(a.last,false)}<div>
+    <div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
+    <div class="nums"><span><b>${num(a.n)}</b> ${a.n===1?'vendita':'vendite'}</span><span><b>${num(a.q)}</b> pz</span><span><b>${eur(a.t)}</b></span></div></div>
+    <div class="det"><div><span>Prima vendita</span><span>${fd(a.first)}</span></div><div><span>Ultima vendita</span><span>${fd(a.last)}</span></div>
+    <div><span>Ultimo prezzo</span><span>${a.lp!==null?`<b>${eur2(a.lp)}</b> (${fd(a.lpd)})`:'–'}</span></div>
+    ${dwgBtns(a.k)}<button class="jump" type="button" data-k="${esc(a.k)}">Storico vendite ›</button></div></div>`}).join('');
+  if(A.length>rlim)h+=`<button class="more" id="rMore">Mostra altri ${num(Math.min(100,A.length-rlim))} articoli (di ${num(A.length)})</button>`;
+  $('rOut').innerHTML=h}
+let rt;$('rq').addEventListener('input',e=>{clearTimeout(rt);rt=setTimeout(()=>{rq=e.target.value.trim().toLowerCase();rlim=100;renderArc()},180)});
+$('rc').addEventListener('change',e=>{rc=e.target.value;rlim=100;renderArc()});
+$('ra').addEventListener('change',e=>{ra=e.target.value;rlim=100;renderArc()});
+$('rReset').addEventListener('click',()=>{rq=rc=ra='';$('rq').value='';$('rc').value='';$('ra').value='';rlim=100;renderArc();window.scrollTo({top:0})});
+$('rOut').addEventListener('click',e=>{if(e.target.id==='rMore'){rlim+=100;renderArc();return}
+  const dw=e.target.closest('.dwg');if(dw){if(dw.dataset.f)openDwg(dw.dataset.f);return}
+  const j=e.target.closest('.jump');if(j){jumpStorico(j.dataset.k,'archivio');return}
+  if(e.target.closest('.det'))return;
+  const r=e.target.closest('.vrow');if(r)r.classList.toggle('open')});
+$('rOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('vrow')){e.preventDefault();e.target.classList.toggle('open')}});
+
 /* ================= STORICO VENDITE ================= */
-let V=[],vq='',vc='',va='',vlim=100;
+let V=[],vq='',vc='',va='',vk='',vlim=100;
 function fillSelects(){
   const cl=[...new Set(V.map(r=>r.c))].sort((a,b)=>a.localeCompare(b,'it'));
   const yr=[...new Set(V.map(r=>r.y))].filter(Boolean).sort((a,b)=>b-a);
   $('vc').innerHTML='<option value="">Tutti i clienti</option>'+cl.map(c=>`<option>${esc(c)}</option>`).join('');
-  $('va').innerHTML='<option value="">Tutti gli anni</option>'+yr.map(y=>`<option>${y}</option>`).join('')}
+  $('va').innerHTML='<option value="">Tutti gli anni</option>'+yr.map(y=>`<option>${y}</option>`).join('');
+  $('rc').innerHTML=$('vc').innerHTML;$('ra').innerHTML=$('va').innerHTML}
 function renderVen(){
   const w=vq?vq.split(/\s+/):[];
-  const L=V.filter(r=>(!vc||r.c===vc)&&(!va||r.y===+va)&&w.every(p=>r.s.includes(p)));
+  const L=V.filter(r=>(!vc||r.c===vc)&&(!va||r.y===+va)&&(vk?r.k.toLowerCase()===vk:w.every(p=>r.s.includes(p))));
   $('vN').textContent=num(L.length);
   $('vQ').textContent=num(L.reduce((a,r)=>a+r.q,0));
   $('vI').textContent=eur(L.reduce((a,r)=>a+r.t,0));
@@ -643,15 +716,16 @@ function renderVen(){
   let h=L.slice(0,vlim).map(r=>`<div class="vrow" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.d,false)}<div>
     <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div><div class="who">${esc(r.c)}</div>
     <div class="nums"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div></div>
-    <div class="det">${dwgBtns(r.k)}</div></div>`).join('');
+    <div class="det">${dwgBtns(r.k)}<button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button></div></div>`).join('');
   if(L.length>vlim)h+=`<button class="more" id="vMore">Mostra altre ${num(Math.min(100,L.length-vlim))} righe (di ${num(L.length)})</button>`;
   $('vOut').innerHTML=h}
-let vt;$('vq').addEventListener('input',e=>{clearTimeout(vt);vt=setTimeout(()=>{vq=e.target.value.trim().toLowerCase();vlim=100;renderVen()},180)});
+let vt;$('vq').addEventListener('input',e=>{clearTimeout(vt);vt=setTimeout(()=>{vq=e.target.value.trim().toLowerCase();vk='';vlim=100;renderVen()},180)});
 $('vc').addEventListener('change',e=>{vc=e.target.value;vlim=100;renderVen()});
 $('va').addEventListener('change',e=>{va=e.target.value;vlim=100;renderVen()});
-$('vReset').addEventListener('click',()=>{vq=vc=va='';$('vq').value='';$('vc').value='';$('va').value='';vlim=100;renderVen();window.scrollTo({top:0})});
+$('vReset').addEventListener('click',()=>{vq=vc=va=vk='';$('vq').value='';$('vc').value='';$('va').value='';vlim=100;renderVen();window.scrollTo({top:0})});
 $('vOut').addEventListener('click',e=>{if(e.target.id==='vMore'){vlim+=100;renderVen();return}
   const dw=e.target.closest('.dwg');if(dw){if(dw.dataset.f)openDwg(dw.dataset.f);return}
+  const j=e.target.closest('.jump');if(j){const k=j.dataset.k;vk=k.toLowerCase();vq=vk;vc='';va='';vlim=100;$('vq').value=k;$('vc').value='';$('va').value='';renderVen();window.scrollTo({top:0});return}
   if(e.target.closest('.det'))return;
   const r=e.target.closest('.vrow');if(r)r.classList.toggle('open')});
 $('vOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('vrow')){e.preventDefault();e.target.classList.toggle('open')}});
