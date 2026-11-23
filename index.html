@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 4.0 · 23/11/2026 -->
+<!-- Gestione Ordini FM · versione 4.1 · 23/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -189,7 +189,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--card)}
 .vrow .day{background:var(--panel)}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
-.vrow.sel1{cursor:default;border:2px solid var(--green)}
+.vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
 .backall{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:2px 0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
 .backall:focus-visible{outline:3px solid var(--red);outline-offset:2px}
@@ -271,7 +271,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 4.0 · 23/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 4.1 · 23/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -315,7 +315,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       <select id="ra" class="sel" aria-label="Anno"><option value="">Tutti gli anni</option></select>
     </div>
   </div>
-  <details class="yrs" id="rYrs" style="margin-top:12px"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
+  <details class="yrs" id="rYrs"><summary>Importo per anno</summary><div class="chart" id="rChart"></div><div id="rYrOut"></div></details>
   <div id="rOut"></div>
 </section>
 
@@ -359,10 +359,11 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 const MESI=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
 const MESIL=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const GIORNI=['dom','lun','mar','mer','gio','ven','sab'];
-const eur=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
-const eur2=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2});
+const grp=t=>t.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const eur2=v=>{v=+v||0;const n=v<0;const[i,d]=Math.abs(v).toFixed(2).split('.');return (n?'-':'')+grp(i)+','+d+' €'};
+const eur=eur2;
 const righe=n=>n===1?'1 riga':num(n)+' righe';
-const num=v=>v.toLocaleString('it-IT',{maximumFractionDigits:2});
+const num=v=>{v=+v||0;const n=v<0;let t=Math.abs(v).toFixed(2).replace(/\.?0+$/,'');const[i,d]=t.split('.');return (n?'-':'')+grp(i)+(d?','+d:'')};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fd=s=>{if(!s)return '–';const[y,m,d]=s.split('-');return d+'/'+m+'/'+y};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -654,21 +655,25 @@ const cardHtml=(a,open)=>{const cl=[...a.cl];const cls=open?cl.join(', '):cl.sli
     ${open?`<div class="det"><div><span>Prima vendita</span><span>${fd(a.first)}</span></div><div><span>Ultima vendita</span><span>${fd(a.last)}</span></div>
     <div><span>Ultimo prezzo</span><span>${a.lp!==null?`<b>${eur2(a.lp)}</b> (${fd(a.lpd)})`:'–'}</span></div>${dwgBtns(a.k)}</div>`:''}</div>`};
 function renderArc(){
+  const yb=$('rYrs');if(yb.parentNode!==$('v-archivio')||yb.nextElementSibling!==$('rOut'))$('rOut').before(yb);
+  yb.style.marginTop=rSel?'':'12px';
   if(rSel){
     const R=V.filter(r=>r.k.toLowerCase()===rSel);
     chart(R);
     if(!R.length){$('rOut').innerHTML=`<div class="selbar"><b>Articolo non trovato</b><button type="button" id="rBack">‹ Tutti</button></div>`;return}
     const a=aggr(R)[0];
     $('rOut').innerHTML=`<button class="backall" type="button" id="rBack">‹ Tutti gli articoli</button>`+cardHtml(a,true)+
-      `<div class="month">Storico vendite · ${righeV(R.length)}</div>`+
-      R.map(r=>`<div class="vrow srow">${dayBox(r.d,false)}<div><div class="who" style="margin-top:0;font-weight:600">${esc(r.c)}</div>
-        <div class="nums"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div>
+      '<div id="yrsSlot"></div>'+`<div class="month">Storico vendite · ${righeV(R.length)}</div>`+
+      R.map(r=>`<div class="vrow srow">${dayBox(r.d,false)}<div>
+        <div class="nums" style="margin-top:0"><span><b>${num(r.q)}</b> pz</span><span>× <b>${eur2(r.p)}</b></span><span>= <b>${eur2(r.t)}</b></span></div>
         ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div></div>`).join('');
+    $('yrsSlot').replaceWith(yb);
     return}
   const w=rq?rq.split(/\s+/):[];
   const S0=V.filter(r=>(!rc||r.c===rc)&&(!ra||r.y===+ra));
   let A=aggr(S0);
   if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
+  if(rc)A.sort((a,b)=>a.k.localeCompare(b.k,'it',{numeric:true}));
   const keys=new Set(A.map(a=>a.k.toLowerCase()));
   chart(w.length?S0.filter(r=>keys.has(r.k.toLowerCase())):S0);
   if(!w.length&&!rc&&!ra){$('rOut').innerHTML='<div class="empty">Cerca un codice o una descrizione, oppure scegli un cliente o un anno.</div>';return}
