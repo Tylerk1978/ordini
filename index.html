@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 6.0 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 6.3 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -99,6 +99,11 @@ header p{margin:4px 0 0;color:var(--mute);font-size:14px}
 .ship h4{margin:0 0 8px;font:700 16px/1.3 "Inter Tight",Inter,sans-serif}
 .ship .row{border:1px solid var(--line);border-radius:10px;margin-bottom:6px}
 .hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+.det .t3b{display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 6px;margin:0 0 8px}
+.det .t3b>div{display:block;flex:1;text-align:center;padding:0}
+.t3b span{display:block;font-size:11px;color:var(--mute)}.t3b b{font:700 15px/1.25 "Inter Tight",Inter,sans-serif;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t3b i{font-style:normal;color:var(--mute);font-weight:700;flex:none}
+.det .t3b .tot{flex:1.4}.t3b .tot b{color:var(--green)}
 .dtot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px!important;font-weight:700}.dtot span:first-child{color:var(--ink)!important}
 .cfx{color:var(--amb);font-weight:600}
 .row .ord{margin-top:0;line-height:1.25}
@@ -249,6 +254,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .srow2 .tt{justify-self:end;font-weight:700;color:var(--green);background:light-dark(#e3efe8,#1f3a2b);border-radius:6px;padding:3px 6px}
 .srow2>span{white-space:nowrap}
 .srow2 .day{padding:2px 0}.srow2 .day b{font-size:16px}.srow2 .day span{font-size:11px}
+.srow2.ny{margin-top:14px}
 .srow2 .desc{grid-column:2/-1;font-size:12px;margin-top:2px}
 .backall{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:2px 0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
 .backall:focus-visible{outline:3px solid var(--red);outline-offset:2px}
@@ -339,7 +345,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 6.0 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 6.3 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -631,21 +637,19 @@ $('dwgClear').addEventListener('click',async()=>{
 const lastSale=k=>{const kk=String(k).toLowerCase();const L=V.filter(v=>v.k.toLowerCase()===kk);
   if(!L.length)return '<div><span>Ultima vendita</span><span>nessuna</span></div>';
   const u=L[0],up=L.find(v=>v.p>0);return `<div><span>Ultima vendita</span><span>${fd(u.d)} · ${num(u.q)} pz</span></div><div><span>Ultimo prezzo</span><span>${up?`<b>${eur2(up.p)}</b> (${fd(up.d)})`:'–'}</span></div>`};
-const isGen=k=>{const c=String(k).trim().toUpperCase();return /^\d\d$/.test(c)||c.startsWith('LAV_')};
+const isGen=k=>{const c=String(k).trim().toUpperCase();return /^\d\d$/.test(c)||c.startsWith('LAV_')||c.startsWith('EXTRA')};
 function jumpStorico(k){openHist(k)}
 const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div>
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
   <div class="who">${esc(r.c)}</div>
   <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}</div>
   </div>${r.conf?'<span class="tbc">TBC</span>':''}<div class="det">
+  <div class="t3b"><div><span>Quantità</span><b>${num(r.n)} pz</b></div><i>×</i><div><span>Prezzo cad.</span><b>${eur2(r.p)}</b></div><i>=</i><div class="tot"><span>Totale</span><b>${eur2(r.tot)}</b></div></div>
   <div><span>Tipo</span><span>${r.t==='CL'?'<b>Conto lavoro</b>':'Conferma ordine'}</span></div>
   <div><span>COC</span><span>${esc(r.coc)} / ${esc(r.a)}</span></div>
   <div><span>Consegna promessa</span><span>${fd(r.dp)}</span></div>
   <div><span>Finestra consegna</span><span>${r.da||r.dx?fd(r.da)+' → '+fd(r.dx):'–'}</span></div>
   <div><span>Spedizione concordata</span><span>${fd(r.ds)}${r.ck?' ('+esc(r.ck)+')':''}</span></div>
-  <div><span>Quantità</span><span>${num(r.n)} pz</span></div>
-  <div><span>Prezzo</span><span>${eur2(r.p)} cad.</span></div>
-  <div class="dtot"><span>Totale</span><span>${eur2(r.tot)}</span></div>
   ${dwgBtns(r.k)}
   ${isGen(r.k)?'':`<button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button>`}
   ${r.conf?'<div><span>Stato</span><span class="cfx">Da confermare</span></div>':''}
@@ -756,13 +760,14 @@ function aggr(rows){const G=new Map();
     a.cl.add(r.c);a.n++;a.q+=r.q;a.t+=r.t;if(r.d&&(!a.first||r.d<a.first))a.first=r.d;
     if(a.lp===null&&r.p>0){a.lp=r.p;a.lpd=r.d}}
   return [...G.values()]}
+const ny=(L,i)=>i>0&&(L[i].d||'').slice(0,4)!==(L[i-1].d||'').slice(0,4)?' ny':'';
 function yearTable(rows){
   const Y=new Map();for(const r of rows)if(r.y){const o=Y.get(r.y)||{q:0,t:0};o.q+=r.q;o.t+=r.t;Y.set(r.y,o)}
   const ys=[...Y].sort((a,b)=>a[0]-b[0]);if(!ys.length)return '<div class="src">Nessun dato.</div>';
   const TQ=ys.reduce((s,[,o])=>s+o.q,0),TT=ys.reduce((s,[,o])=>s+o.t,0);
   return `<table class="yt"><thead><tr><th>Anno</th><th>Volumi</th><th>Valori</th></tr></thead><tbody>`+ys.map(([y,o])=>`<tr><td>${y}</td><td>${num(o.q)} pz</td><td>${eur(o.t)}</td></tr>`).join('')+`</tbody><tfoot><tr><td>Totale</td><td>${num(TQ)} pz</td><td>${eur(TT)}</td></tr></tfoot></table>`}
 const salesHtml=(R,a)=>`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+
-  R.map((r,i)=>`<div class="srow2${i%2?' z':''}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
+  R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
 function openHist(k){
   const kk=String(k).toLowerCase();const R=V.filter(r=>r.k.toLowerCase()===kk);
   let h;
@@ -795,7 +800,7 @@ function renderArc(){
     const a=aggr(R)[0];
     $('rOut').innerHTML=`<button class="backall" type="button" id="rBack">‹ Tutti gli articoli</button>`+cardHtml(a,true)+
       `<div class="adwg">${dwgBtns(a.k)}</div>`+'<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+
-      R.map((r,i)=>`<div class="srow2${i%2?' z':''}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>
+      R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>
         ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
     $('yrsSlot').replaceWith(yb);
     return}
@@ -892,7 +897,7 @@ function renderCli(){
     const A=[...G.values()].sort((a,b)=>b.t-a.t);
     h+=A.slice(0,klim).map((a,i)=>{const op=kOpen.has(a.k.toLowerCase());
       return `<div class="kart${i%2?' z':''}${op?' op':''}" data-a="${esc(a.k.toLowerCase())}"><span class="ka"><b>${esc(a.k)}</b><small>${esc(a.x)}</small></span><span>${num(a.q)}</span><span class="tt">${eur2(a.t).replace(' €','')}</span></div>`+
-      (op?`<div class="ksub"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+a.rs.map((r,j)=>`<div class="srow2${j%2?' z':''}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('')+'</div>':'')}).join('');
+      (op?`<div class="ksub"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+a.rs.map((r,j)=>`<div class="srow2${j%2?' z':''}${ny(a.rs,j)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('')+'</div>':'')}).join('');
     if(A.length>klim)h+=`<button class="more" id="kMore">Mostra altri ${num(Math.min(100,A.length-klim))} articoli (di ${num(A.length)})</button>`;
     $('kOut').innerHTML=h+'</div>';return}
   const m=new Map();for(const r of V){const o=m.get(r.c)||{n:0,t:0,last:''};o.n++;o.t+=r.t;if(r.d>o.last)o.last=r.d;m.set(r.c,o)}
