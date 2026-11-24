@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 5.4 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 5.6 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -114,18 +114,18 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(44px,11.6vw,68px);line-height:1;letter-spacing:-.01em}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
-.menu{display:grid;gap:9px;margin-top:clamp(8px,3.5vh,32px)}
-.mbtn{display:grid;grid-template-columns:50px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:70px;padding:9px 16px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
+.menu{display:grid;gap:8px;margin-top:clamp(6px,2.5vh,24px)}
+.mbtn{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;min-height:60px;padding:7px 14px;border-radius:16px;border:0;background:var(--card);color:var(--ink);text-align:left;font:inherit;cursor:pointer;box-shadow:0 1px 0 var(--line),0 6px 18px #0000000d}
 .mbtn:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .mbtn:disabled{opacity:.45;cursor:default}
-.mico{width:50px;height:50px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
-.mico svg{width:28px;height:28px}
+.mico{width:44px;height:44px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.mico svg{width:25px;height:25px}
 .mbtn:first-child .mico{background:var(--green);color:#fff}
-.mupd{margin-top:14px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:70px}
+.mupd{margin-top:12px;background:transparent;box-shadow:none;border:1.5px dashed var(--line);min-height:60px}
 .mupd input{display:none}
 .mupd:focus-within{outline:3px solid var(--red);outline-offset:2px}
 .mupd .mico{background:var(--panel);color:var(--ink)}
-.mt{display:block;font:700 21px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
+.mt{display:block;font:700 20px/1.2 "Inter Tight",Inter,system-ui,sans-serif}
 .ms{display:block;font-size:14px;color:var(--mute);margin-top:2px}
 .arr{font-size:30px;color:var(--mute)}
 .src{font-size:13px;color:var(--mute)}
@@ -197,6 +197,15 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .vrow.arow{grid-template-columns:minmax(0,1fr)}
 .vrow.sel1{cursor:default;border:2px solid var(--green);margin-bottom:10px}
 .srow{cursor:default}
+.prog{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0 4px}
+.pg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;text-align:center}
+.pg3 span{display:block;font-size:12px;color:var(--mute)}.pg3 b{font:700 22px/1.2 "Inter Tight",Inter,sans-serif}
+.pg3 div:first-child b{color:var(--green)}.pg3 div:nth-child(2) b{color:var(--red)}
+.pbar{height:12px;border-radius:6px;background:var(--panel);overflow:hidden;margin:10px 0 6px}.pbar i{display:block;height:100%;background:var(--green);border-radius:6px}
+.prog .src{text-align:center;font-size:12px}
+.mrow2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:5px;background:var(--card)}
+.mup{min-width:64px;min-height:52px;border-radius:10px;border:2px solid var(--green);background:transparent;color:var(--green);font:700 13px/1.15 Inter,sans-serif;cursor:pointer}
+.mup:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .alink{display:flex;align-items:center;gap:10px;min-height:52px;margin:-2px 0 10px;padding:8px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:15px;line-height:1.3}
 .alink svg{flex:none;width:22px;height:22px;color:var(--green)}
 .alink small{display:block;font-size:12px;color:var(--mute)}
@@ -298,6 +307,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg></span>
         <span><span class="mt">Clienti</span></span><span class="arr">›</span>
       </button>
+      <button class="mbtn" data-go="mancanti" type="button">
+        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v4M12 18.5v.01"/></svg></span>
+        <span><span class="mt">Disegni mancanti</span></span><span class="arr">›</span>
+      </button>
       <button class="mbtn" data-go="impostazioni" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
         <span><span class="mt">Impostazioni</span></span><span class="arr">›</span>
@@ -318,7 +331,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 5.4 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 5.6 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -370,6 +383,21 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
   <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Clienti</h2></div>
   <div id="kSearch" class="bar"><input id="kq" class="search" type="search" placeholder="Cerca cliente" autocomplete="off" aria-label="Cerca cliente"></div>
   <div id="kOut"></div>
+</section>
+
+<section id="v-mancanti" class="view" hidden>
+  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Disegni mancanti</h2></div>
+  <div class="bar">
+    <div class="seg" role="group" aria-label="Elenco">
+      <button id="mOrd" aria-pressed="true">Ordini aperti</button>
+      <button id="mAll" aria-pressed="false">Tutti gli articoli</button>
+    </div>
+    <input id="mq" class="search" type="search" placeholder="Cerca codice, descrizione o cliente" autocomplete="off" aria-label="Cerca articoli senza disegno" style="margin-top:8px">
+  </div>
+  <div class="prog" id="mProg"></div>
+  <div class="count" id="mCount"></div>
+  <div id="mOut"></div>
+  <input type="file" id="mFile" accept=".pdf,application/pdf" hidden>
 </section>
 
 <section id="v-impostazioni" class="view" hidden>
@@ -431,7 +459,7 @@ async function pdfOp(mode,fn){const db=await idb();return await new Promise((res
 async function dbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)});return true}catch(e){return false}}
 
 /* ---------- navigazione ---------- */
-const VIEWS=['home','ordini','consegne','impostazioni','archivio','clienti'];
+const VIEWS=['home','ordini','consegne','impostazioni','archivio','clienti','mancanti'];
 let DATA=null,keepScroll=null,keepFrom=null;
 function route(){
   let v=location.hash.slice(1);if(!VIEWS.includes(v)||(!DATA&&v!=='impostazioni'))v='home';
@@ -439,7 +467,7 @@ function route(){
   for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':'‹ Home';
   if(v==='ordini'&&keepScroll!==null&&keepFrom===v){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
-  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli()}
+  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli();else if(v==='mancanti')renderMan()}
 window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&b.dataset.go==='archivio')rSel=null;if(b&&b.dataset.go==='clienti'){kSel=null;klim=100}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
@@ -752,6 +780,44 @@ $('rOut').addEventListener('click',e=>{if(e.target.id==='rMore'){rlim+=100;rende
   if(e.target.closest('.det')||e.target.closest('.srow')||e.target.closest('.sel1'))return;
   const r=e.target.closest('.vrow');if(r&&r.dataset.k){rScroll=window.scrollY;rSel=r.dataset.k.toLowerCase();renderArc();window.scrollTo({top:0})}});
 $('rOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.k&&!rSel){e.preventDefault();e.target.click()}});
+
+/* ================= DISEGNI MANCANTI ================= */
+let mTab='ord',mq='',mlim=100,mCode=null;
+function renderMan(){
+  $('mOrd').setAttribute('aria-pressed',mTab==='ord');$('mAll').setAttribute('aria-pressed',mTab==='all');
+  const M=new Map();
+  if(mTab==='ord'){for(const r of D){const k=r.k.trim();if(!k||ESCLUSI.has(k)||findDwg(k).length)continue;const key=k.toLowerCase();
+      let a=M.get(key);if(!a){a={k,x:r.x,cl:new Set(),d:r.ref,n:0};M.set(key,a)}a.cl.add(r.c);a.n++;if(r.ref&&(!a.d||r.ref<a.d))a.d=r.ref}}
+  else{for(const r of V){const k=r.k.trim();if(!k||ESCLUSI.has(k))continue;const key=k.toLowerCase();
+      let a=M.get(key);if(!a){if(findDwg(k).length){M.set(key,null);continue}a={k,x:r.x,cl:new Set(),d:r.d,n:0};M.set(key,a)}if(!a)continue;a.cl.add(r.c);a.n++}}
+  const tot=new Set((mTab==='ord'?D:V).map(r=>r.k.trim().toLowerCase()).filter(k=>k&&!ESCLUSI.has(k)));
+  const miss=[...M.values()].filter(Boolean).length,done=tot.size-miss,pct=tot.size?done/tot.size*100:0;
+  $('mProg').innerHTML=`<div class="pg3"><div><span>Fatti</span><b>${num(done)}</b></div><div><span>Mancano</span><b>${num(miss)}</b></div><div><span>Completato</span><b>${pct.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})}%</b></div></div>
+    <div class="pbar"><i style="width:${pct.toFixed(2)}%"></i></div><div class="src">${mTab==='ord'?'Codici degli ordini aperti':'Tutti i codici venduti dal 2015'}: ${num(tot.size)}</div>`;
+  let A=[...M.values()].filter(Boolean);
+  if(mTab==='ord')A.sort((a,b)=>(a.d||'9999').localeCompare(b.d||'9999'));
+  const w=mq?mq.split(/\s+/):[];
+  if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
+  $('mCount').textContent=A.length===1?'1 articolo senza disegno':num(A.length)+' articoli senza disegno';
+  if(!A.length){$('mOut').innerHTML='<div class="empty">Nessun articolo senza disegno. 👍</div>';return}
+  let h=A.slice(0,mlim).map(a=>{const cl=[...a.cl];const cls=cl.slice(0,2).join(', ')+(cl.length>2?` +${cl.length-2}`:'');
+    return `<div class="mrow2"><div><div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
+      <div class="ord">${mTab==='ord'?`Prima consegna: <b>${fd(a.d)}</b>`:`Ultima vendita: <b>${fd(a.d)}</b>`}</div></div>
+      <button class="mup" type="button" data-k="${esc(a.k)}">Carica<br>PDF</button></div>`}).join('');
+  if(A.length>mlim)h+=`<button class="more" id="mMore">Mostra altri ${num(Math.min(100,A.length-mlim))} (di ${num(A.length)})</button>`;
+  $('mOut').innerHTML=h}
+$('mOrd').addEventListener('click',()=>{mTab='ord';mlim=100;renderMan()});
+$('mAll').addEventListener('click',()=>{mTab='all';mlim=100;renderMan()});
+let mt;$('mq').addEventListener('input',e=>{clearTimeout(mt);mt=setTimeout(()=>{mq=e.target.value.trim().toLowerCase();mlim=100;renderMan()},150)});
+$('mOut').addEventListener('click',e=>{if(e.target.id==='mMore'){mlim+=100;renderMan();return}
+  const b=e.target.closest('.mup');if(b){mCode=b.dataset.k;$('mFile').click()}});
+$('mFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!mCode)return;
+  const name=mCode.replace(/[\\/:*?"<>|]/g,'_')+'.pdf';
+  try{const buf=await f.arrayBuffer();await pdfOp('readwrite',st=>st.put(new Blob([buf],{type:'application/pdf'}),name));await loadDwgIndex();
+    const y=window.scrollY;renderMan();window.scrollTo(0,y);
+    $('mCount').textContent='Disegno collegato a '+mCode+' · '+$('mCount').textContent}
+  catch(x){$('mCount').textContent='Non sono riuscita a salvare il disegno.'}
+  mCode=null});
 
 /* ================= CLIENTI ================= */
 const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
