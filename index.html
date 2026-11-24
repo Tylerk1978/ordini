@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 5.2 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 5.3 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -318,7 +318,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 5.2 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 5.3 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -496,15 +496,18 @@ function findDwg(code){
 const dwgBtns=k=>{const L=findDwg(k);
   if(!L.length)return '<button class="dwg" type="button" disabled>Disegno non disponibile</button>';
   return L.map(f=>`<button class="dwg" type="button" data-f="${esc(f)}">Disegno${L.length>1?' · '+esc(f.replace(/\.pdf$/i,'')):''}</button>`).join('')};
-let PDFJS=null,pdfDoc=null,pdfName='',pdfBlob=null,pz=1,baseW=0,rTok=0,rTimer=null;
+/* immagini molto grandi (scansioni A3/A1 a 300 dpi) vanno ridotte: l'iPhone non disegna tele oltre ~16 milioni di pixel */
+const OFFOK=(()=>{try{return typeof OffscreenCanvas!=='undefined'&&!!new OffscreenCanvas(1,1).getContext('2d')}catch(e){return false}})();
+let blankChecked=false,PDFJS=null,pdfDoc=null,pdfName='',pdfBlob=null,pz=1,baseW=0,rTok=0,rTimer=null;
 async function openDwg(name){
   const v=$('pdfv');v.hidden=false;$('pdfTitle').textContent=name.replace(/\.pdf$/i,'');
-  $('pdfBody').innerHTML='<div class="pmsg">Apro il disegno…</div>';pz=1;pdfName=name;pdfDoc=null;
+  $('pdfBody').innerHTML='<div class="pmsg">Apro il disegno…</div>';pz=1;pdfName=name;pdfDoc=null;blankChecked=false;
   try{
     const blob=await pdfOp('readonly',st=>st.get(name));if(!blob)throw new Error('Disegno non trovato sul telefono.');
     pdfBlob=blob;
     if(!PDFJS){PDFJS=await import('./pdf.min.mjs');PDFJS.GlobalWorkerOptions.workerSrc='./pdf.worker.min.mjs'}
-    pdfDoc=await PDFJS.getDocument({data:new Uint8Array(await blob.arrayBuffer()),wasmUrl:new URL('wasm/',location.href).href,standardFontDataUrl:new URL('standard_fonts/',location.href).href,useSystemFonts:true}).promise;
+    pdfDoc=await PDFJS.getDocument({data:new Uint8Array(await blob.arrayBuffer()),wasmUrl:new URL('wasm/',location.href).href,standardFontDataUrl:new URL('standard_fonts/',location.href).href,useSystemFonts:true,
+      isOffscreenCanvasSupported:OFFOK,canvasMaxAreaInBytes:Math.round(window.__PDFMAX||48e6)}).promise;
     const body=$('pdfBody');baseW=body.clientWidth-20;
     const wrap=document.createElement('div');wrap.className='pwrap';wrap.id='pdfWrap';
     for(let n=1;n<=pdfDoc.numPages;n++){const pg=await pdfDoc.getPage(n);const v1=pg.getViewport({scale:1});
@@ -525,7 +528,9 @@ async function renderPdf(){
     c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
     await pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
     if(tok!==rTok)return;
-    c.style.width=old.style.width;c.style.height=old.style.height;if(old.parentNode)old.replaceWith(c)}}
+    c.style.width=old.style.width;c.style.height=old.style.height;if(old.parentNode)old.replaceWith(c)}
+  if(tok===rTok&&!blankChecked){blankChecked=true;try{const c=wrap.querySelector('canvas');const t=document.createElement('canvas');t.width=120;t.height=90;const x=t.getContext('2d');x.drawImage(c,0,0,120,90);const d=x.getImageData(0,0,120,90).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i]<200)n++;
+    if(n<3){const h=document.createElement('div');h.className='phint';h.style.opacity=1;h.style.pointerEvents='auto';h.innerHTML='Il disegno non si vede? Tocca <b>Condividi</b> in alto per aprirlo con l\'anteprima dell\'iPhone.';$('pdfBody').appendChild(h)}}catch(e){}}}
 function setZoom(nz,cx,cy){
   const body=$('pdfBody'),wrap=$('pdfWrap');if(!wrap)return;
   nz=Math.max(1,Math.min(6,nz));const k=nz/pz;
