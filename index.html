@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 6.7 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 6.8 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -347,7 +347,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 6.7 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 6.8 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -773,11 +773,13 @@ function openHist(k){
   const kk=String(k).toLowerCase();const R=V.filter(r=>r.k.toLowerCase()===kk);
   let h;
   $('histTitle').textContent=k;
-  if(!R.length)h='<div class="empty">Nessuna vendita registrata per questo codice.</div>';
+  if(!R.length)h='<div class="empty" style="padding:20px 10px">Nessuna vendita registrata per questo codice.</div>';
   else{const a=aggr(R)[0];h=`<details class="yrs"><summary>Storico per anno</summary>${yearTable(R)}</details>`+salesHtml(R,a)}
+  h+=ordInCorso(k);
   $('histBody').innerHTML=h;$('histBody').scrollTop=0;$('histv').hidden=false}
 $('histClose').addEventListener('click',()=>{$('histv').hidden=true;$('histBody').innerHTML=''});
-$('histBody').addEventListener('click',e=>{const dw=e.target.closest('.dwg');if(dw&&dw.dataset.f)openDwg(dw.dataset.f)});
+$('histBody').addEventListener('click',e=>{const dw=e.target.closest('.dwg');if(dw&&dw.dataset.f){openDwg(dw.dataset.f);return}
+  if(e.target.closest('.det'))return;const r=e.target.closest('.oic .row');if(r)r.classList.toggle('open')});
 function chart(rows){
   const Y=new Map();for(const r of rows)if(r.y){const o=Y.get(r.y)||{q:0,t:0};o.q+=r.q;o.t+=r.t;Y.set(r.y,o)}
   const ys=[...Y].sort((a,b)=>a[0]-b[0]);
