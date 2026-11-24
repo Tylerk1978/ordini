@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 5.3 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 5.4 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -318,7 +318,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 5.3 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 5.4 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -506,7 +506,7 @@ async function openDwg(name){
     const blob=await pdfOp('readonly',st=>st.get(name));if(!blob)throw new Error('Disegno non trovato sul telefono.');
     pdfBlob=blob;
     if(!PDFJS){PDFJS=await import('./pdf.min.mjs');PDFJS.GlobalWorkerOptions.workerSrc='./pdf.worker.min.mjs'}
-    pdfDoc=await PDFJS.getDocument({data:new Uint8Array(await blob.arrayBuffer()),wasmUrl:new URL('wasm/',location.href).href,standardFontDataUrl:new URL('standard_fonts/',location.href).href,useSystemFonts:true,
+    pdfDoc=await PDFJS.getDocument({data:new Uint8Array(await blob.arrayBuffer()),wasmUrl:new URL('./',location.href).href,standardFontDataUrl:new URL('./',location.href).href,useSystemFonts:true,
       isOffscreenCanvasSupported:OFFOK,canvasMaxAreaInBytes:Math.round(window.__PDFMAX||48e6)}).promise;
     const body=$('pdfBody');baseW=body.clientWidth-20;
     const wrap=document.createElement('div');wrap.className='pwrap';wrap.id='pdfWrap';

@@ -1,9 +1,9 @@
-// Gestione Ordini FM · versione 5.3
+// Gestione Ordini FM · versione 5.4
 // Il codice dell'app sta in cache per l'uso offline; i dati degli ordini restano solo sul telefono.
 // Le pagine si scaricano sempre prima dalla rete (così gli aggiornamenti arrivano subito)
 // e solo se manca la connessione si usa la copia in cache.
-const CACHE = 'ordini-FM-5.3';
-const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png', 'pdf.min.mjs', 'pdf.worker.min.mjs', 'wasm/openjpeg.wasm', 'wasm/jbig2.wasm', 'wasm/qcms_bg.wasm'];
+const CACHE = 'ordini-FM-5.4';
+const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png', 'pdf.min.mjs', 'pdf.worker.min.mjs', 'openjpeg.wasm', 'jbig2.wasm', 'qcms_bg.wasm'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE)
     .then(c => c.addAll(FILES.map(u => new Request(u, {cache: 'reload'}))))
