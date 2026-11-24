@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 5.7 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 5.9 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -110,7 +110,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 @media(prefers-reduced-motion:no-preference){.cl,.list>.row{animation:in .25s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
 
 /* home */
-.home{min-height:calc(100svh / var(--z,1) - 34px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:20px;padding-top:22px}
+.home{position:relative;min-height:calc(100svh / var(--z,1) - 34px - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:20px;padding-top:22px}
+.gear{position:absolute;top:18px;right:0;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;z-index:2}
+.gear svg{width:24px;height:24px}
+.gear:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .ver{margin-top:auto;align-self:center;font-size:13px;color:var(--mute);padding-top:12px;text-align:center}
 .home h1{margin:0;font-size:clamp(44px,11.6vw,68px);line-height:1;letter-spacing:-.01em}
 .home h1 span{display:block;color:var(--green);margin-top:8px}
@@ -203,6 +206,9 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .pg3 div:first-child b{color:var(--green)}.pg3 div:nth-child(2) b{color:var(--red)}
 .pbar{height:12px;border-radius:6px;background:var(--panel);overflow:hidden;margin:10px 0 6px}.pbar i{display:block;height:100%;background:var(--green);border-radius:6px}
 .prog .src{text-align:center;font-size:12px}
+.orow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.orow span{overflow-wrap:anywhere}
+.odel{min-height:36px;padding:0 10px;border-radius:8px;border:1px solid var(--red);background:transparent;color:var(--red);font:600 13px Inter,sans-serif;cursor:pointer}
 .mrow2{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:5px;background:var(--card)}
 .mup{min-width:64px;min-height:52px;border-radius:10px;border:2px solid var(--green);background:transparent;color:var(--green);font:700 13px/1.15 Inter,sans-serif;cursor:pointer}
 .mup:focus-visible{outline:3px solid var(--red);outline-offset:2px}
@@ -257,6 +263,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .fsb:disabled{opacity:.35}
 .fsb:focus-visible,.fsr:focus-visible{outline:3px solid var(--red);outline-offset:2px}
 .fsv{text-align:center}.fsv b{display:block;font:700 26px "Inter Tight",Inter,sans-serif}.fsv span{font-size:14px;color:var(--mute)}
+.fsrange{width:100%;margin:18px 0 2px;accent-color:var(--green);height:32px}
+.fsscale{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
 .fsr{margin-top:14px;width:100%;min-height:44px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 15px Inter,sans-serif;cursor:pointer}
 .cpick{position:fixed;inset:0;z-index:25;background:var(--bg);display:flex;flex-direction:column}
 .cpbar{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
@@ -289,7 +297,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 <section id="v-home" class="view">
   <div class="home">
-    <h1>Gestione Ordini <span>FM</span></h1>
+    <button class="gear" type="button" id="gear" aria-label="Impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <h1>Gestione<br>Ordini<span>FM</span></h1>
     <div class="menu">
       <button class="mbtn" data-go="ordini" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 11h6M9 15h6"/></svg></span>
@@ -311,10 +320,6 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v4M12 18.5v.01"/></svg></span>
         <span><span class="mt">Disegni mancanti</span></span><span class="arr">›</span>
       </button>
-      <button class="mbtn" data-go="impostazioni" type="button">
-        <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
-        <span><span class="mt">Impostazioni</span></span><span class="arr">›</span>
-      </button>
       <label class="mbtn mupd" id="homefoot" hidden>
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></span>
         <span><span class="mt">Aggiorna</span><span class="ms" id="src">–</span></span><span class="arr">›</span>
@@ -331,7 +336,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 5.7 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 5.9 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -387,6 +392,14 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 <section id="v-mancanti" class="view" hidden>
   <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Disegni mancanti</h2></div>
+  <div class="set" style="margin-top:4px">
+    <div class="set-t">Disegni PDF</div>
+    <p class="src" id="dwgInfo">Nessun disegno caricato.</p>
+    <details class="yrs" id="dwgOrph" hidden style="margin:8px 0"><summary id="dwgOrphT">Disegni non collegati</summary><p class="hint" style="margin-top:0">Il nome di questi file non corrisponde a nessun codice venduto o in ordine. Puoi rinominarli sul PC con il codice giusto e ricaricarli, oppure collegarli dalla lista qui sotto con "Carica PDF".</p><div id="dwgOrphL"></div></details>
+    <label class="upd" style="width:100%;justify-content:center">Aggiungi disegni<input type="file" id="dwgIn" accept=".pdf,application/pdf" multiple></label>
+    <p class="hint">Scegli i PDF dalla cartella dei disegni (nell'app File tocca "Seleziona" e poi "Seleziona tutto"). Restano solo su questo telefono. Il disegno viene collegato all'ordine dal nome del file, che deve contenere il codice articolo.</p>
+    <button class="fsr" id="dwgClear" type="button">Cancella tutti i disegni</button>
+  </div>
   <div class="bar">
     <div class="seg" role="group" aria-label="Elenco">
       <button id="mOrd" aria-pressed="true">Ordini aperti</button>
@@ -410,14 +423,9 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       <div class="fsv"><b id="fsVal">100%</b><span>Il testo si vede così</span></div>
       <button class="fsb" id="fsPlus" type="button" aria-label="Testo più grande">A+</button>
     </div>
+    <input type="range" id="fsRange" class="fsrange" min="70" max="130" step="5" value="100" aria-label="Dimensione del testo">
+    <div class="fsscale"><span>70%</span><span>100%</span><span>130%</span></div>
     <button class="fsr" id="fsReset" type="button">Ripristina dimensione normale</button>
-  </div>
-  <div class="set">
-    <div class="set-t">Disegni PDF</div>
-    <p class="src" id="dwgInfo">Nessun disegno caricato.</p>
-    <label class="upd" style="width:100%;justify-content:center">Aggiungi disegni<input type="file" id="dwgIn" accept=".pdf,application/pdf" multiple></label>
-    <p class="hint">Scegli i PDF dalla cartella dei disegni (nell'app File tocca "Seleziona" e poi "Seleziona tutto"). Restano solo su questo telefono. Il disegno viene collegato all'ordine dal nome del file, che deve contenere il codice articolo.</p>
-    <button class="fsr" id="dwgClear" type="button">Cancella tutti i disegni</button>
   </div>
 </section>
 
@@ -479,13 +487,15 @@ for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventL
 document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
 
 /* ================= DIMENSIONE TESTO ================= */
-const FS=[80,90,100,110,120,135,150];let fsI=2;
-try{const k=FS.indexOf(+localStorage.getItem('ordini-testo'));if(k>=0)fsI=k}catch(e){}
-function applyFs(){const z=FS[fsI]/100;document.body.style.zoom=z;document.documentElement.style.setProperty('--z',z);$('fsVal').textContent=FS[fsI]+'%';$('fsMinus').disabled=fsI===0;$('fsPlus').disabled=fsI===FS.length-1;
-  try{localStorage.setItem('ordini-testo',FS[fsI])}catch(e){}}
-$('fsMinus').addEventListener('click',()=>{if(fsI>0){fsI--;applyFs()}});
-$('fsPlus').addEventListener('click',()=>{if(fsI<FS.length-1){fsI++;applyFs()}});
-$('fsReset').addEventListener('click',()=>{fsI=2;applyFs()});
+let fsV=100;
+try{const k=+localStorage.getItem('ordini-testo');if(k)fsV=Math.max(70,Math.min(130,Math.round(k/5)*5))}catch(e){}
+function applyFs(){const z=fsV/100;document.body.style.zoom=z;document.documentElement.style.setProperty('--z',z);$('fsVal').textContent=fsV+'%';$('fsRange').value=fsV;$('fsMinus').disabled=fsV<=70;$('fsPlus').disabled=fsV>=130;
+  try{localStorage.setItem('ordini-testo',fsV)}catch(e){}}
+$('fsMinus').addEventListener('click',()=>{if(fsV>70){fsV-=5;applyFs()}});
+$('fsPlus').addEventListener('click',()=>{if(fsV<130){fsV+=5;applyFs()}});
+$('fsRange').addEventListener('input',e=>{fsV=+e.target.value;$('fsVal').textContent=fsV+'%'});
+$('fsRange').addEventListener('change',e=>{fsV=+e.target.value;applyFs()});
+$('fsReset').addEventListener('click',()=>{fsV=100;applyFs()});
 applyFs();
 
 /* ================= ORDINI ================= */
@@ -508,11 +518,19 @@ const dayBox=(ref,late)=>{
 /* ---------- disegni PDF ---------- */
 let DWG=new Map(),ANAG={};
 const nn=x=>String(x||'').toUpperCase().replace(/\.PDF$/,'').replace(/\s+/g,' ').trim();
-async function loadDwgIndex(){try{const keys=await pdfOp('readonly',st=>st.getAllKeys());DWG=new Map((keys||[]).map(k=>[nn(k),k]))}catch(e){DWG=new Map()}dwgInfo()}
+async function loadDwgIndex(){try{const keys=await pdfOp('readonly',st=>st.getAllKeys());DWG=new Map((keys||[]).map(k=>[nn(k),k]))}catch(e){DWG=new Map()}dwgInfo();if(DATA&&!$('v-mancanti').hidden)renderMan()}
 function dwgInfo(){const el=$('dwgInfo');if(!el)return;
   if(!DWG.size){el.textContent='Nessun disegno caricato.';return}
   const cod=new Set(D.map(r=>r.k));let ok=0;for(const k of cod)if(findDwg(k).length)ok++;
-  el.textContent=`${num(DWG.size)} disegni sul telefono · collegati a ${num(ok)} codici su ${num(cod.size)} degli ordini aperti.`}
+  el.textContent=`${num(DWG.size)} disegni sul telefono · collegati a ${num(ok)} codici su ${num(cod.size)} degli ordini aperti.`;
+  orphans()}
+function orphans(){
+  const box=$('dwgOrph');if(!box)return;
+  const used=new Set();const all=new Set([...D.map(r=>r.k),...V.map(r=>r.k)]);
+  for(const k of all)for(const f of findDwg(k))used.add(f);
+  const O=[...DWG.values()].filter(f=>!used.has(f)).sort((a,b)=>a.localeCompare(b,'it',{numeric:true}));
+  box.hidden=!O.length;$('dwgOrphT').textContent=`Disegni non collegati (${num(O.length)})`;
+  $('dwgOrphL').innerHTML=O.map(f=>`<div class="orow"><span>${esc(f)}</span><button type="button" class="odel" data-f="${esc(f)}">Elimina</button></div>`).join('')}
 function findDwg(code){
   const K=nn(code);if(!K||!DWG.size)return [];
   const a=ANAG[K];if(a&&DWG.has(nn(a)))return [DWG.get(nn(a))];
@@ -599,6 +617,9 @@ $('dwgIn').addEventListener('change',async e=>{
     try{const buf=await f.arrayBuffer();await pdfOp('readwrite',st=>st.put(new Blob([buf],{type:'application/pdf'}),f.name))}catch(x){err++}}
   ov.remove();await loadDwgIndex();
   $('dwgInfo').textContent=`Aggiunti ${num(fs.length-err)} disegni${err?`, ${err} non salvati`:''}. `+$('dwgInfo').textContent});
+$('dwgOrphL').addEventListener('click',async e=>{const b=e.target.closest('.odel');if(!b)return;
+  if(b.dataset.c!=='1'){b.dataset.c='1';b.textContent='Conferma';setTimeout(()=>{if(b.isConnected){b.dataset.c='';b.textContent='Elimina'}},4000);return}
+  try{await pdfOp('readwrite',st=>st.delete(b.dataset.f))}catch(x){}await loadDwgIndex()});
 $('dwgClear').addEventListener('click',async()=>{
   const b=$('dwgClear');if(b.dataset.c!=='1'){b.dataset.c='1';b.textContent='Tocca di nuovo per confermare';setTimeout(()=>{b.dataset.c='';b.textContent='Cancella tutti i disegni'},4000);return}
   b.dataset.c='';b.textContent='Cancella tutti i disegni';try{await pdfOp('readwrite',st=>st.clear())}catch(e){}await loadDwgIndex()});
@@ -673,6 +694,7 @@ $('vCli').addEventListener('click',openPicker);
 $('cpClose').addEventListener('click',()=>{$('cpick').hidden=true});
 $('cpList').addEventListener('click',e=>{const b=e.target.closest('.cpi');if(!b)return;selCli=b.dataset.c;view='cli';openCli.clear();$('cpick').hidden=true;syncOrd();window.scrollTo({top:0})});
 $('vDat').addEventListener('click',()=>{view='dat';selCli=null;syncOrd()});
+$('gear').addEventListener('click',()=>{backTo=null;location.hash='impostazioni'});
 $('reset').addEventListener('click',()=>{$('q').value='';query='';filt='all';view='dat';selCli=null;openCli.clear();syncOrd();window.scrollTo({top:0})});
 let tm;$('q').addEventListener('input',e=>{clearTimeout(tm);tm=setTimeout(()=>{query=e.target.value.trim().toLowerCase();limit=150;renderOrd()},120)});
 $('out').addEventListener('click',e=>{
