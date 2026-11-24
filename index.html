@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 5.9 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 6.0 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -85,6 +85,7 @@ header p{margin:4px 0 0;color:var(--mute);font-size:14px}
 .det{grid-column:1/-1;display:none;font-size:14px;background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:4px}
 .row.open .det{display:block;margin-top:8px}
 .row{position:relative}
+.tbc{position:absolute;right:10px;bottom:6px;font:700 11px/1 Inter,sans-serif;color:#e07b00;letter-spacing:.04em}
 .nodwg{position:absolute;top:5px;right:10px;font:700 17px/1 Inter,sans-serif;color:var(--mute)}
 .dwg{display:block;width:100%;margin-top:10px;min-height:44px;border-radius:10px;border:2px solid var(--green);background:transparent;color:var(--green);font:700 15px Inter,sans-serif;cursor:pointer}
 .dwg:disabled{border-color:var(--line);color:var(--mute);font-weight:500;cursor:default}
@@ -279,6 +280,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .selbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 8px 8px 14px;margin:4px 0 8px}
 .selbar b{flex:1;font:700 17px/1.25 "Inter Tight",Inter,sans-serif}
 .selbar button{flex:none;min-height:40px;padding:0 12px;border-radius:9px;border:0;background:var(--ink);color:var(--bg);font:600 14px Inter,sans-serif;cursor:pointer}
+.histv{position:fixed;inset:0;z-index:26;background:var(--bg);display:flex;flex-direction:column}
+.histb{flex:1;overflow:auto;padding:12px max(4vw,14px) calc(16px + env(safe-area-inset-bottom))}
 .pdfv{position:fixed;inset:0;z-index:30;background:#2a2f35;display:flex;flex-direction:column;zoom:calc(1 / var(--z,1))}
 .pdfbar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;background:#16191c;color:#fff}
 .ptitle{flex:1;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -336,7 +339,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 5.9 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 6.0 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -348,9 +351,6 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
     <div class="chips" role="group" aria-label="Filtri">
       <button class="chip" data-f="all" aria-pressed="true">Tutti</button>
       <button class="chip" data-f="late" aria-pressed="false">In ritardo</button>
-      <button class="chip" data-f="nw" aria-pressed="false">Prossima settimana</button>
-      <button class="chip" data-f="y26" aria-pressed="false">Entro il 2026</button>
-      <button class="chip" data-f="y27" aria-pressed="false">Dal 2027</button>
       <button class="chip" data-f="conf" aria-pressed="false">Da confermare</button>
       <button class="chip" data-f="cl" aria-pressed="false">Conto lavoro</button>
     </div>
@@ -436,6 +436,10 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
   <div class="cpbar"><div class="cptitle">Scegli il cliente</div><button type="button" class="cpx" id="cpClose" aria-label="Chiudi">✕</button></div>
   <div class="cplist" id="cpList"></div>
 </div>
+<div id="histv" class="histv" hidden role="dialog" aria-label="Storico vendite">
+  <div class="cpbar"><button type="button" class="back hb" id="histClose">‹ Indietro</button><div class="cptitle" style="font-size:19px">Storico vendite</div></div>
+  <div class="histb" id="histBody"></div>
+</div>
 <div id="pdfv" class="pdfv" hidden role="dialog" aria-label="Disegno">
   <div class="pdfbar">
     <button type="button" class="pbtn" id="pdfClose" aria-label="Chiudi">✕</button>
@@ -473,14 +477,14 @@ let DATA=null,keepScroll=null,keepFrom=null;
 function route(){
   let v=location.hash.slice(1);if(!VIEWS.includes(v)||(!DATA&&v!=='impostazioni'))v='home';
   for(const x of VIEWS)$('v-'+x).hidden=x!==v;
-  for(const b of document.querySelectorAll('.back'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':'‹ Home';
+  for(const b of document.querySelectorAll('.back:not(.hb)'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':'‹ Home';
   if(v==='ordini'&&keepScroll!==null&&keepFrom===v){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
   if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli();else if(v==='mancanti')renderMan()}
 window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&b.dataset.go==='archivio')rSel=null;if(b&&b.dataset.go==='clienti'){kSel=null;klim=100}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
-for(const b of document.querySelectorAll('.back'))b.addEventListener('click',()=>{const t=backTo;backTo=null;location.hash=t||'home'});
+for(const b of document.querySelectorAll('.back:not(.hb)'))b.addEventListener('click',()=>{const t=backTo;backTo=null;location.hash=t||'home'});
 
 /* ---------- niente zoom con le dita ---------- */
 for(const ev of ['gesturestart','gesturechange','gestureend'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
@@ -500,7 +504,7 @@ applyFs();
 
 /* ================= ORDINI ================= */
 let D=[],filt='all',view='dat',selCli=null,query='',openCli=new Set(),limit=150;
-try{const s=JSON.parse(localStorage.getItem('ordini-vista')||'{}');if(s.filt&&s.filt!=='d30')filt=s.filt}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('ordini-vista')||'{}');if(['all','late','conf','cl'].includes(s.filt))filt=s.filt}catch(e){}
 const saveV=()=>{try{localStorage.setItem('ordini-vista',JSON.stringify({filt}))}catch(e){}};
 const pass=r=>{
   if(filt==='late'&&!r.late)return false;
@@ -627,13 +631,13 @@ $('dwgClear').addEventListener('click',async()=>{
 const lastSale=k=>{const kk=String(k).toLowerCase();const L=V.filter(v=>v.k.toLowerCase()===kk);
   if(!L.length)return '<div><span>Ultima vendita</span><span>nessuna</span></div>';
   const u=L[0],up=L.find(v=>v.p>0);return `<div><span>Ultima vendita</span><span>${fd(u.d)} · ${num(u.q)} pz</span></div><div><span>Ultimo prezzo</span><span>${up?`<b>${eur2(up.p)}</b> (${fd(up.d)})`:'–'}</span></div>`};
-function jumpStorico(k,from){rSel=String(k).toLowerCase();
-  if(from==='ordini')keepScroll=window.scrollY;keepFrom=from;backTo=from;location.hash='archivio'}
+const isGen=k=>{const c=String(k).trim().toUpperCase();return /^\d\d$/.test(c)||c.startsWith('LAV_')};
+function jumpStorico(k){openHist(k)}
 const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div>
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
   <div class="who">${esc(r.c)}</div>
   <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}</div>
-  </div><div class="det">
+  </div>${r.conf?'<span class="tbc">TBC</span>':''}<div class="det">
   <div><span>Tipo</span><span>${r.t==='CL'?'<b>Conto lavoro</b>':'Conferma ordine'}</span></div>
   <div><span>COC</span><span>${esc(r.coc)} / ${esc(r.a)}</span></div>
   <div><span>Consegna promessa</span><span>${fd(r.dp)}</span></div>
@@ -642,9 +646,8 @@ const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?
   <div><span>Quantità</span><span>${num(r.n)} pz</span></div>
   <div><span>Prezzo</span><span>${eur2(r.p)} cad.</span></div>
   <div class="dtot"><span>Totale</span><span>${eur2(r.tot)}</span></div>
-  ${lastSale(r.k)}
   ${dwgBtns(r.k)}
-  <button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button>
+  ${isGen(r.k)?'':`<button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button>`}
   ${r.conf?'<div><span>Stato</span><span class="cfx">Da confermare</span></div>':''}
   ${r.cig?`<div><span>CIG</span><span>${esc(r.cig)}</span></div>`:''}
   ${r.no?`<div><span>Note</span><span>${esc(r.no)}</span></div>`:''}
@@ -753,6 +756,21 @@ function aggr(rows){const G=new Map();
     a.cl.add(r.c);a.n++;a.q+=r.q;a.t+=r.t;if(r.d&&(!a.first||r.d<a.first))a.first=r.d;
     if(a.lp===null&&r.p>0){a.lp=r.p;a.lpd=r.d}}
   return [...G.values()]}
+function yearTable(rows){
+  const Y=new Map();for(const r of rows)if(r.y){const o=Y.get(r.y)||{q:0,t:0};o.q+=r.q;o.t+=r.t;Y.set(r.y,o)}
+  const ys=[...Y].sort((a,b)=>a[0]-b[0]);if(!ys.length)return '<div class="src">Nessun dato.</div>';
+  const TQ=ys.reduce((s,[,o])=>s+o.q,0),TT=ys.reduce((s,[,o])=>s+o.t,0);
+  return `<table class="yt"><thead><tr><th>Anno</th><th>Volumi</th><th>Valori</th></tr></thead><tbody>`+ys.map(([y,o])=>`<tr><td>${y}</td><td>${num(o.q)} pz</td><td>${eur(o.t)}</td></tr>`).join('')+`</tbody><tfoot><tr><td>Totale</td><td>${num(TQ)} pz</td><td>${eur(TT)}</td></tr></tfoot></table>`}
+const salesHtml=(R,a)=>`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+
+  R.map((r,i)=>`<div class="srow2${i%2?' z':''}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
+function openHist(k){
+  const kk=String(k).toLowerCase();const R=V.filter(r=>r.k.toLowerCase()===kk);
+  let h;
+  if(!R.length)h=`<div class="vrow arow sel1"><div><div class="cod">${esc(k)}</div><div class="desc">Nessuna vendita registrata per questo codice.</div></div></div><div class="adwg">${dwgBtns(k)}</div>`;
+  else{const a=aggr(R)[0];h=cardHtml(a,true)+`<div class="adwg">${dwgBtns(a.k)}</div><details class="yrs"><summary>Storico per anno</summary>${yearTable(R)}</details>`+salesHtml(R,a)}
+  $('histBody').innerHTML=h;$('histBody').scrollTop=0;$('histv').hidden=false}
+$('histClose').addEventListener('click',()=>{$('histv').hidden=true;$('histBody').innerHTML=''});
+$('histBody').addEventListener('click',e=>{const dw=e.target.closest('.dwg');if(dw&&dw.dataset.f)openDwg(dw.dataset.f)});
 function chart(rows){
   const Y=new Map();for(const r of rows)if(r.y){const o=Y.get(r.y)||{q:0,t:0};o.q+=r.q;o.t+=r.t;Y.set(r.y,o)}
   const ys=[...Y].sort((a,b)=>a[0]-b[0]);
