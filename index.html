@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 6.6 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 6.7 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -347,7 +347,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 6.6 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 6.7 · 24/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -641,7 +641,7 @@ const lastSale=k=>{const kk=String(k).toLowerCase();const L=V.filter(v=>v.k.toLo
   const u=L[0],up=L.find(v=>v.p>0);return `<div><span>Ultima vendita</span><span>${fd(u.d)} · ${num(u.q)} pz</span></div><div><span>Ultimo prezzo</span><span>${up?`<b>${eur2(up.p)}</b> (${fd(up.d)})`:'–'}</span></div>`};
 const isGen=k=>{const c=String(k).trim().toUpperCase();return /^\d\d$/.test(c)||c.startsWith('LAV_')||c.startsWith('EXTRA')};
 function jumpStorico(k){openHist(k)}
-const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div class="rtx">
+const rowHtml=(r,showCli,noBtns)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div class="rtx">
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
   <div class="who">${esc(r.c)}</div>
   <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}</div>
@@ -654,8 +654,8 @@ const rowHtml=(r,showCli)=>`<div class="row" tabindex="0">${findDwg(r.k).length?
   ${r.conf?'<div><span>Stato</span><span class="cfx">Da confermare</span></div>':''}
   ${r.cig?`<div><span>CIG</span><span>${esc(r.cig)}</span></div>`:''}
   ${r.no?`<div><span>Note</span><span>${esc(r.no)}</span></div>`:''}
-  ${dwgBtns(r.k)}
-  ${isGen(r.k)?'':`<button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button>`}
+  ${noBtns?'':dwgBtns(r.k)}
+  ${noBtns||isGen(r.k)?'':`<button class="jump" type="button" data-k="${esc(r.k)}">Storico vendite ›</button>`}
   </div></div>`;
 function renderOrd(){
   for(const b of document.querySelectorAll('.chip'))b.setAttribute('aria-pressed',b.dataset.f===filt);
@@ -818,7 +818,7 @@ function renderArc(){
   $('rOut').innerHTML=h}
 const righeV=n=>n===1?'1 vendita':num(n)+' vendite';
 function ordInCorso(k){const kk=String(k).toLowerCase();const O=D.filter(r=>r.k.toLowerCase()===kk);
-  return `<details class="yrs oic"><summary>Ordini in corso (${O.length})</summary>${O.length?`<div class="list">${O.map(r=>rowHtml(r,true)).join('')}</div>`:'<div class="src" style="padding-bottom:8px">Nessun ordine in corso per questo codice.</div>'}</details>`}
+  return `<details class="yrs oic"><summary>Ordini in corso (${O.length})</summary>${O.length?`<div class="list">${O.map(r=>rowHtml(r,true,true)).join('')}</div>`:'<div class="src" style="padding-bottom:8px">Nessun ordine in corso per questo codice.</div>'}</details>`}
 function closeSel(){rSel=null;if(backTo){const t=backTo;backTo=null;location.hash=t;return}renderArc();requestAnimationFrame(()=>window.scrollTo(0,rScroll))}
 let rt;$('rq').addEventListener('input',e=>{clearTimeout(rt);rt=setTimeout(()=>{rq=e.target.value.trim().toLowerCase();rSel=null;rlim=100;renderArc()},180)});
 $('rc').addEventListener('change',e=>{rc=e.target.value;rSel=null;rlim=100;renderArc()});
