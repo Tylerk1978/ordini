@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 7.0 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 7.1 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -248,14 +248,17 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .oic .list{padding-bottom:8px}.oic .list>.row{background:var(--bg)}
 .adwg{margin:0 0 10px}.adwg .dwg{margin-top:0}.adwg .dwg+.dwg{margin-top:6px}
 .cronl{padding-bottom:6px}
-.sth,.srow2{display:grid;grid-template-columns:52px minmax(0,.8fr) minmax(0,1fr) minmax(0,1.25fr);gap:0 8px;align-items:center}
-.sth{font-size:12px;font-weight:600;color:var(--mute);padding:4px 0 6px;border-bottom:1px solid var(--line)}
-.sth span,.srow2>span{text-align:right}.sth span:first-child{text-align:left}
-.sth{padding-left:4px;padding-right:4px}
-.srow2{padding:6px 4px;border-radius:6px;font-size:15px;font-variant-numeric:tabular-nums}
-.srow2.z{background:var(--bg)}
-.srow2 .tt{justify-self:end;font-weight:700;color:var(--green);background:light-dark(#e3efe8,#1f3a2b);border-radius:6px;padding:3px 6px}
-.srow2>span{white-space:nowrap}
+.sth,.srow2{display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 8px;align-items:center}
+.sth{font-size:11px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
+.sbx{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 6px}
+.sbx>span,.sbx>b{flex:1;text-align:center;white-space:nowrap;min-width:0}.sbx>.tt{flex:1.4}
+.sbx i{font-style:normal;color:var(--mute);font-weight:700;flex:none}
+.srow2 .sbx{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 6px}
+.srow2 .sbx b{font:700 14px/1.25 "Inter Tight",Inter,sans-serif;font-variant-numeric:tabular-nums}
+.srow2 .sbx b.tt{color:var(--green)}
+.srow2{padding:4px 4px;border-radius:6px}
+.srow2.z{background:transparent}
+.srow2 .desc{grid-column:2}
 .srow2 .day{padding:2px 0}.srow2 .day b{font-size:16px}.srow2 .day span{font-size:11px}
 .srow2.ny{margin-top:14px}
 .srow2 .desc{grid-column:2/-1;font-size:12px;margin-top:2px}
@@ -348,7 +351,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 7.0 · 25/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 7.1 · 25/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -645,11 +648,10 @@ function jumpStorico(k){openHist(k)}
 const rowHtml=(r,showCli,noBtns)=>`<div class="row" tabindex="0">${findDwg(r.k).length?'':'<span class="nodwg" aria-label="Disegno mancante">*</span>'}${dayBox(r.ref,r.late)}<div class="rtx">
   <div class="cod">${esc(r.k)}</div><div class="desc">${esc(r.x)}</div>
   <div class="who">${esc(r.c)}</div>
-  <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}</div>
+  <div class="ord">Ordine <b>${esc(r.o||'n.d.')}</b>${r.rg?` · riga ${esc(r.rg)}`:''}${r.coc?` · COC <b>${esc(r.coc)}</b>`:''}</div>
   ${r.conf?'<span class="tbc">TBC</span>':''}</div><div class="det">
   <div class="t3b"><div><span>Quantità</span><b>${num(r.n)} pz</b></div><i>×</i><div><span>Prezzo cad.</span><b>${eur2(r.p)}</b></div><i>=</i><div class="tot"><span>Totale</span><b>${eur2(r.tot)}</b></div></div>
   <div><span>Tipo</span><span>${r.t==='CL'?'<b>Conto lavoro</b>':'Conferma ordine'}</span></div>
-  <div><span>COC</span><span>${esc(r.coc)} / ${esc(r.a)}</span></div>
   <div><span>Consegna promessa</span><span>${fd(r.dp)}</span></div>
   ${r.da||r.dx?`<div><span>Finestra consegna</span><span>${fd(r.da)} → ${fd(r.dx)}</span></div>`:''}
   ${r.conf?'<div><span>Stato</span><span class="cfx">Da confermare</span></div>':''}
@@ -768,8 +770,8 @@ function yearTable(rows){
   const ys=[...Y].sort((a,b)=>a[0]-b[0]);if(!ys.length)return '<div class="src">Nessun dato.</div>';
   const TQ=ys.reduce((s,[,o])=>s+o.q,0),TT=ys.reduce((s,[,o])=>s+o.t,0);
   return `<table class="yt"><thead><tr><th>Anno</th><th>Volumi</th><th>Valori</th></tr></thead><tbody>`+ys.map(([y,o])=>`<tr><td>${y}</td><td>${num(o.q)} pz</td><td>${eur(o.t)}</td></tr>`).join('')+`</tbody><tfoot><tr><td>Totale</td><td>${num(TQ)} pz</td><td>${eur(TT)}</td></tr></tfoot></table>`}
-const salesHtml=(R,a)=>`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+
-  R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
+const salesHtml=(R,a)=>`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><div class="sbx"><span>Pezzi</span><i>×</i><span>€ cad.</span><i>=</i><span class="tt">Totale €</span></div></div>`+
+  R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<div class="sbx"><b>${num(r.q)}</b><i>×</i><b>${eur2(r.p).replace(' €','')}</b><i>=</i><b class="tt">${eur2(r.t).replace(' €','')}</b></div>${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>';
 function openHist(k){
   const kk=String(k).toLowerCase();const R=V.filter(r=>r.k.toLowerCase()===kk);
   let h;
@@ -804,8 +806,8 @@ function renderArc(){
     if(!R.length){$('rOut').innerHTML=`<div class="selbar"><b>Articolo non trovato</b><button type="button" id="rBack">‹ Tutti</button></div>`;return}
     const a=aggr(R)[0];
     $('rOut').innerHTML=`<button class="backall" type="button" id="rBack">‹ Tutti gli articoli</button>`+cardHtml(a,true)+
-      `<div class="adwg">${dwgBtns(a.k)}</div>`+'<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+
-      R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span>
+      `<div class="adwg">${dwgBtns(a.k)}</div>`+'<div id="yrsSlot"></div>'+`<details class="yrs cron"><summary>Vendite</summary><div class="cronl"><div class="sth"><span>Data</span><div class="sbx"><span>Pezzi</span><i>×</i><span>€ cad.</span><i>=</i><span class="tt">Totale €</span></div></div>`+
+      R.map((r,i)=>`<div class="srow2${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<div class="sbx"><b>${num(r.q)}</b><i>×</i><b>${eur2(r.p).replace(' €','')}</b><i>=</i><b class="tt">${eur2(r.t).replace(' €','')}</b></div>
         ${r.x&&r.x!==a.x?`<div class="desc">${esc(r.x)}</div>`:''}</div>`).join('')+'</div></details>'+ordInCorso(a.k);
     $('yrsSlot').replaceWith(yb);
     return}
