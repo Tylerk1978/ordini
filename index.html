@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 7.2 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 7.3 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -352,7 +352,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 7.2 · 25/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 7.3 · 25/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -490,7 +490,7 @@ function route(){
   for(const b of document.querySelectorAll('.back:not(.hb)'))b.textContent=backTo==='ordini'?'‹ Ordini':backTo==='consegne'?'‹ Date':'‹ Home';
   if(v==='ordini'&&keepScroll!==null&&keepFrom===v){const y=keepScroll;keepScroll=null;renderOrd();requestAnimationFrame(()=>window.scrollTo(0,y));return}
   window.scrollTo(0,0);
-  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli();else if(v==='mancanti')renderMan()}
+  if(v==='ordini')renderOrd();else if(v==='consegne')renderCons();else if(v==='archivio')renderArc();else if(v==='clienti')renderCli();else if(v==='mancanti'){$('dCar').open=false;$('dMan').open=false;renderMan()}}
 window.addEventListener('hashchange',route);
 document.querySelector('.menu').addEventListener('click',e=>{const b=e.target.closest('.mbtn');backTo=null;if(b&&b.dataset.go==='ordini'){view='dat';selCli=null;openCli.clear()}if(b&&b.dataset.go==='archivio')rSel=null;if(b&&b.dataset.go==='clienti'){kSel=null;klim=100}if(b&&!b.disabled&&b.dataset.go)location.hash=b.dataset.go});
 let backTo=null;
