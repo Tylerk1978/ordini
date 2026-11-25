@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 7.3 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 7.4 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -352,7 +352,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 7.3 · 25/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 7.4 · 25/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -841,7 +841,7 @@ let mq='',mc='',mlim=100;
 function renderMan(){
   if($('mc').options.length<2){const cl=[...new Set([...V,...D].map(r=>r.c))].sort((a,b)=>a.localeCompare(b,'it'));$('mc').innerHTML='<option value="">Tutti i clienti</option>'+cl.map(c=>`<option>${esc(c)}</option>`).join('');$('mc').value=mc}
   const CF=mc;const M=new Map(),tot=new Set();
-  const add=(r,isOrd)=>{if(CF&&r.c!==CF)return;const k=r.k.trim();if(!k||ESCLUSI.has(k))return;const key=k.toLowerCase();tot.add(key);
+  const add=(r,isOrd)=>{if(CF&&r.c!==CF)return;const k=r.k.trim();if(!k||ESCLUSI.has(k)||isGen(k))return;const key=k.toLowerCase();tot.add(key);
     if(M.has(key)&&M.get(key)===null)return;let a=M.get(key);
     if(!a){if(findDwg(k).length){M.set(key,null);return}a={k,x:r.x,cl:new Set(),od:null,ld:null};M.set(key,a)}
     a.cl.add(r.c);if(isOrd){if(r.ref&&(!a.od||r.ref<a.od))a.od=r.ref}else if(r.d&&(!a.ld||r.d>a.ld))a.ld=r.d};
