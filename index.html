@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 6.8 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 6.9 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -232,7 +232,8 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .kth,.krow{display:grid;grid-template-columns:48px minmax(0,1fr) auto minmax(78px,auto);gap:0 8px;align-items:center;font-variant-numeric:tabular-nums}
 .kth{font-size:12px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
 .kth span:nth-child(n+3),.krow>span:nth-child(n+3){text-align:right}
-.krow{padding:6px 4px;border-radius:6px;font-size:14px}.krow.z{background:var(--bg)}
+.krow{padding:6px 4px;border-radius:6px;font-size:14px}
+.krow.ny{margin-top:14px}.krow.z{background:var(--bg)}
 .kth2,.kart{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(86px,auto);gap:0 10px;align-items:center;font-variant-numeric:tabular-nums}
 .kth2{font-size:12px;font-weight:600;color:var(--mute);padding:4px 4px 6px;border-bottom:1px solid var(--line)}
 .kth2 span:nth-child(n+2),.kart>span:nth-child(n+2){text-align:right;white-space:nowrap}
@@ -347,7 +348,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 6.8 · 24/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 6.9 · 25/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -900,13 +901,9 @@ function renderCli(){
       <div class="nums"><span><b>${num(R.length)}</b> ${R.length===1?'vendita':'vendite'}</span><span>Totale <b>${eur(TT)}</b></span></div></div></div>
       ${addrBox(kSel)}
       <div class="kbox"><div class="kt">Fatturato anno per anno</div>${ys.map(([y,o])=>`<div class="kyr"><span>${y}</span><i><u style="width:${Math.max(1,o.t/mx*100).toFixed(1)}%"></u></i><b>${eur(o.t)}</b></div>`).join('')}</div>
-      <div class="kbox"><div class="kt">Vendite</div><div class="kth2"><span>Articolo</span><span>Pezzi</span><span>Totale €</span></div>`;
-    const G=new Map();for(const r of R){const key=r.k.toLowerCase();let a=G.get(key);if(!a){a={k:r.k,x:r.x,q:0,t:0,rs:[]};G.set(key,a)}a.q+=r.q;a.t+=r.t;a.rs.push(r)}
-    const A=[...G.values()].sort((a,b)=>b.t-a.t);
-    h+=A.slice(0,klim).map((a,i)=>{const op=kOpen.has(a.k.toLowerCase());
-      return `<div class="kart${i%2?' z':''}${op?' op':''}" data-a="${esc(a.k.toLowerCase())}"><span class="ka"><b>${esc(a.k)}</b><small>${esc(a.x)}</small></span><span>${num(a.q)}</span><span class="tt">${eur2(a.t).replace(' €','')}</span></div>`+
-      (op?`<div class="ksub"><div class="sth"><span>Data</span><span>Pezzi</span><span>€ cad.</span><span>Totale €</span></div>`+a.rs.map((r,j)=>`<div class="srow2${j%2?' z':''}${ny(a.rs,j)}">${dayBox(r.d,false)}<span>${num(r.q)}</span><span>${eur2(r.p).replace(' €','')}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('')+'</div>':'')}).join('');
-    if(A.length>klim)h+=`<button class="more" id="kMore">Mostra altri ${num(Math.min(100,A.length-klim))} articoli (di ${num(A.length)})</button>`;
+      <div class="kbox"><div class="kt">Vendite</div><div class="kth"><span>Data</span><span>Articolo</span><span>Pezzi</span><span>Totale €</span></div>`;
+    h+=R.slice(0,klim).map((r,i)=>`<div class="krow${i%2?' z':''}${ny(R,i)}">${dayBox(r.d,false)}<span class="ka"><b>${esc(r.k)}</b><small>${esc(r.x)}</small></span><span>${num(r.q)}</span><span class="tt">${eur2(r.t).replace(' €','')}</span></div>`).join('');
+    if(R.length>klim)h+=`<button class="more" id="kMore">Mostra altre ${num(Math.min(100,R.length-klim))} vendite (di ${num(R.length)})</button>`;
     $('kOut').innerHTML=h+'</div>';return}
   const m=new Map();for(const r of V){const o=m.get(r.c)||{n:0,t:0,last:''};o.n++;o.t+=r.t;if(r.d>o.last)o.last=r.d;m.set(r.c,o)}
   const w=kq?kq.split(/\s+/):[];
