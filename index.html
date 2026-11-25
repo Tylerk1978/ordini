@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Gestione Ordini FM · versione 7.1 · 24/11/2026 -->
+<!-- Gestione Ordini FM · versione 7.2 · 24/11/2026 -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -185,6 +185,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 .yrs summary{list-style:none;justify-content:space-between}.yrs summary::-webkit-details-marker{display:none}
 .yrs summary::after{content:"›";font-size:22px;color:var(--mute);transform:rotate(90deg);transition:transform .2s}
 .yrs[open] summary::after{transform:rotate(-90deg)}
+.yrs.big{padding:6px 14px}.yrs.big>summary{min-height:56px;font-size:17px;font-weight:700}
 .yr{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;padding:4px 0;font-size:14px}
 .yr i{display:block;height:10px;border-radius:5px;background:var(--panel);overflow:hidden}
 .yr i u{display:block;height:100%;background:var(--ink)}
@@ -333,7 +334,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
       </button>
       <button class="mbtn" data-go="mancanti" type="button">
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v4M12 18.5v.01"/></svg></span>
-        <span><span class="mt">Disegni mancanti</span></span><span class="arr">›</span>
+        <span><span class="mt">Disegni</span></span><span class="arr">›</span>
       </button>
       <label class="mbtn mupd" id="homefoot" hidden>
         <span class="mico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></span>
@@ -351,7 +352,7 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 
 
     <div class="msg" id="msg" role="status"></div>
-    <div class="ver" id="ver">Versione 7.1 · 25/11/2026 · by Massimo Merigo</div>
+    <div class="ver" id="ver">Versione 7.2 · 25/11/2026 · by Massimo Merigo</div>
   </div>
 </section>
 
@@ -403,27 +404,24 @@ footer{font-size:13px;color:var(--mute);margin-top:24px}
 </section>
 
 <section id="v-mancanti" class="view" hidden>
-  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Disegni mancanti</h2></div>
-  <div class="set" style="margin-top:4px">
-    <div class="set-t">Disegni PDF</div>
+  <div class="vhead"><button class="back" type="button">‹ Home</button><h2>Disegni</h2></div>
+  <details class="yrs big" id="dCar"><summary>Carica disegni</summary>
+  <div class="set" style="margin:4px 0 8px">
     <p class="src" id="dwgInfo">Nessun disegno caricato.</p>
-    <details class="yrs" id="dwgOrph" hidden style="margin:8px 0"><summary id="dwgOrphT">Disegni non collegati</summary><p class="hint" style="margin-top:0">Il nome di questi file non corrisponde a nessun codice venduto o in ordine. Puoi rinominarli sul PC con il codice giusto e ricaricarli, oppure collegarli dalla lista qui sotto con "Carica PDF".</p><div id="dwgOrphL"></div></details>
+    <details class="yrs" id="dwgOrph" hidden style="margin:8px 0"><summary id="dwgOrphT">Disegni non collegati</summary><p class="hint" style="margin-top:0">Il nome di questi file non corrisponde a nessun codice venduto o in ordine. Puoi rinominarli sul PC con il codice giusto e ricaricarli.</p><div id="dwgOrphL"></div></details>
     <label class="upd" style="width:100%;justify-content:center">Aggiungi disegni<input type="file" id="dwgIn" accept=".pdf,application/pdf" multiple></label>
     <p class="hint">Scegli i PDF dalla cartella dei disegni (nell'app File tocca "Seleziona" e poi "Seleziona tutto"). Restano solo su questo telefono. Il disegno viene collegato all'ordine dal nome del file, che deve contenere il codice articolo.</p>
     <button class="fsr" id="dwgClear" type="button">Cancella tutti i disegni</button>
-  </div>
-  <div class="bar">
-    <div class="seg" role="group" aria-label="Elenco">
-      <button id="mOrd" aria-pressed="true">Ordini aperti</button>
-      <button id="mAll" aria-pressed="false">Tutti gli articoli</button>
-    </div>
-    <input id="mq" class="search" type="search" placeholder="Cerca codice, descrizione o cliente" autocomplete="off" aria-label="Cerca articoli senza disegno" style="margin-top:8px">
-    <select id="mc" class="sel" aria-label="Cliente" style="margin-top:8px" hidden><option value="">Tutti i clienti</option></select>
+  </div></details>
+  <details class="yrs big" id="dMan"><summary>Disegni mancanti</summary>
+  <div class="bar" style="margin-top:4px">
+    <input id="mq" class="search" type="search" placeholder="Cerca codice, descrizione o cliente" autocomplete="off" aria-label="Cerca articoli senza disegno">
+    <select id="mc" class="sel" aria-label="Cliente" style="margin-top:8px"><option value="">Tutti i clienti</option></select>
   </div>
   <div class="prog" id="mProg"></div>
   <div class="count" id="mCount"></div>
   <div id="mOut"></div>
-  <input type="file" id="mFile" accept=".pdf,application/pdf" hidden>
+  </details>
 </section>
 
 <section id="v-impostazioni" class="view" hidden>
@@ -839,46 +837,32 @@ $('rOut').addEventListener('click',e=>{if(e.target.id==='rMore'){rlim+=100;rende
 $('rOut').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.k&&!rSel){e.preventDefault();e.target.click()}});
 
 /* ================= DISEGNI MANCANTI ================= */
-let mTab='ord',mq='',mc='',mlim=100,mCode=null;
+let mq='',mc='',mlim=100;
 function renderMan(){
-  $('mOrd').setAttribute('aria-pressed',mTab==='ord');$('mAll').setAttribute('aria-pressed',mTab==='all');
-  $('mc').hidden=mTab!=='all';
-  if($('mc').options.length<2){const cl=[...new Set(V.map(r=>r.c))].sort((a,b)=>a.localeCompare(b,'it'));$('mc').innerHTML='<option value="">Tutti i clienti</option>'+cl.map(c=>`<option>${esc(c)}</option>`).join('');$('mc').value=mc}
-  const CF=mTab==='all'&&mc?mc:'';
-  const M=new Map();
-  if(mTab==='ord'){for(const r of D){const k=r.k.trim();if(!k||ESCLUSI.has(k)||findDwg(k).length)continue;const key=k.toLowerCase();
-      let a=M.get(key);if(!a){a={k,x:r.x,cl:new Set(),d:r.ref,n:0};M.set(key,a)}a.cl.add(r.c);a.n++;if(r.ref&&(!a.d||r.ref<a.d))a.d=r.ref}}
-  else{for(const r of V){if(CF&&r.c!==CF)continue;const k=r.k.trim();if(!k||ESCLUSI.has(k))continue;const key=k.toLowerCase();
-      let a=M.get(key);if(!a){if(findDwg(k).length){M.set(key,null);continue}a={k,x:r.x,cl:new Set(),d:r.d,n:0};M.set(key,a)}if(!a)continue;a.cl.add(r.c);a.n++}}
-  const tot=new Set((mTab==='ord'?D:V).filter(r=>!CF||r.c===CF).map(r=>r.k.trim().toLowerCase()).filter(k=>k&&!ESCLUSI.has(k)));
-  const miss=[...M.values()].filter(Boolean).length,done=tot.size-miss,pct=tot.size?done/tot.size*100:0;
-  $('mProg').innerHTML=`<div class="pg3"><div><span>Fatti</span><b>${num(done)}</b></div><div><span>Mancano</span><b>${num(miss)}</b></div><div><span>Completato</span><b>${pct.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})}%</b></div></div>
-    <div class="pbar"><i style="width:${pct.toFixed(2)}%"></i></div><div class="src">${mTab==='ord'?'Codici degli ordini aperti':CF?'Codici venduti a '+esc(CF):'Tutti i codici venduti dal 2015'}: ${num(tot.size)}</div>`;
+  if($('mc').options.length<2){const cl=[...new Set([...V,...D].map(r=>r.c))].sort((a,b)=>a.localeCompare(b,'it'));$('mc').innerHTML='<option value="">Tutti i clienti</option>'+cl.map(c=>`<option>${esc(c)}</option>`).join('');$('mc').value=mc}
+  const CF=mc;const M=new Map(),tot=new Set();
+  const add=(r,isOrd)=>{if(CF&&r.c!==CF)return;const k=r.k.trim();if(!k||ESCLUSI.has(k))return;const key=k.toLowerCase();tot.add(key);
+    if(M.has(key)&&M.get(key)===null)return;let a=M.get(key);
+    if(!a){if(findDwg(k).length){M.set(key,null);return}a={k,x:r.x,cl:new Set(),od:null,ld:null};M.set(key,a)}
+    a.cl.add(r.c);if(isOrd){if(r.ref&&(!a.od||r.ref<a.od))a.od=r.ref}else if(r.d&&(!a.ld||r.d>a.ld))a.ld=r.d};
+  for(const r of D)add(r,true);for(const r of V)add(r,false);
   let A=[...M.values()].filter(Boolean);
-  if(mTab==='ord')A.sort((a,b)=>(a.d||'9999').localeCompare(b.d||'9999'));
+  const miss=A.length,done=tot.size-miss,pct=tot.size?done/tot.size*100:0;
+  $('mProg').innerHTML=`<div class="pg3"><div><span>Fatti</span><b>${num(done)}</b></div><div><span>Mancano</span><b>${num(miss)}</b></div><div><span>Completato</span><b>${pct.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1})}%</b></div></div>
+    <div class="pbar"><i style="width:${pct.toFixed(2)}%"></i></div><div class="src">${CF?'Codici di '+esc(CF):'Tutti i codici (venduti e in ordine)'}: ${num(tot.size)}</div>`;
+  A.sort((a,b)=>a.od&&b.od?a.od.localeCompare(b.od):a.od?-1:b.od?1:(b.ld||'').localeCompare(a.ld||''));
   const w=mq?mq.split(/\s+/):[];
   if(w.length)A=A.filter(a=>{const s=(a.k+' '+a.x+' '+[...a.cl].join(' ')).toLowerCase();return w.every(p=>s.includes(p))});
   $('mCount').textContent=A.length===1?'1 articolo senza disegno':num(A.length)+' articoli senza disegno';
   if(!A.length){$('mOut').innerHTML='<div class="empty">Nessun articolo senza disegno. 👍</div>';return}
   let h=A.slice(0,mlim).map(a=>{const cl=[...a.cl];const cls=cl.slice(0,2).join(', ')+(cl.length>2?` +${cl.length-2}`:'');
     return `<div class="mrow2"><div><div class="cod">${esc(a.k)}</div><div class="desc">${esc(a.x)}</div><div class="who">${esc(cls)}</div>
-      <div class="ord">${mTab==='ord'?`Prima consegna: <b>${fd(a.d)}</b>`:`Ultima vendita: <b>${fd(a.d)}</b>`}</div></div>
-      <button class="mup" type="button" data-k="${esc(a.k)}">Carica<br>PDF</button></div>`}).join('');
+      <div class="ord">${a.od?`In ordine, consegna: <b>${fd(a.od)}</b>`:`Ultima vendita: <b>${fd(a.ld)}</b>`}</div></div></div>`}).join('');
   if(A.length>mlim)h+=`<button class="more" id="mMore">Mostra altri ${num(Math.min(100,A.length-mlim))} (di ${num(A.length)})</button>`;
   $('mOut').innerHTML=h}
-$('mOrd').addEventListener('click',()=>{mTab='ord';mlim=100;renderMan()});
-$('mAll').addEventListener('click',()=>{mTab='all';mlim=100;renderMan()});
-$('mc').addEventListener('change',e=>{mc=e.target.value;mlim=100;renderMan();window.scrollTo({top:0})});
+$('mc').addEventListener('change',e=>{mc=e.target.value;mlim=100;renderMan()});
 let mt;$('mq').addEventListener('input',e=>{clearTimeout(mt);mt=setTimeout(()=>{mq=e.target.value.trim().toLowerCase();mlim=100;renderMan()},150)});
-$('mOut').addEventListener('click',e=>{if(e.target.id==='mMore'){mlim+=100;renderMan();return}
-  const b=e.target.closest('.mup');if(b){mCode=b.dataset.k;$('mFile').click()}});
-$('mFile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||!mCode)return;
-  const name=mCode.replace(/[\\/:*?"<>|]/g,'_')+'.pdf';
-  try{const buf=await f.arrayBuffer();await pdfOp('readwrite',st=>st.put(new Blob([buf],{type:'application/pdf'}),name));await loadDwgIndex();
-    const y=window.scrollY;renderMan();window.scrollTo(0,y);
-    $('mCount').textContent='Disegno collegato a '+mCode+' · '+$('mCount').textContent}
-  catch(x){$('mCount').textContent='Non sono riuscita a salvare il disegno.'}
-  mCode=null});
+$('mOut').addEventListener('click',e=>{if(e.target.id==='mMore'){mlim+=100;renderMan()}});
 
 /* ================= CLIENTI ================= */
 const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
